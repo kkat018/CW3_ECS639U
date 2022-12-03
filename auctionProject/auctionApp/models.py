@@ -3,28 +3,49 @@ from django.db import models
 from django.utils import timezone
 
 
+class Item(models.Model):
+    name = models.CharField(max_length=100)
+    starting_price = models.FloatField(blank=False)
+    description = models.CharField(max_length=250, blank=True)
+    date_posted = models.DateField('Date Posted')
+    image = models.ImageField(blank=True)
+    user = models.ForeignKey("User", related_name= "owner", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'starting_price': self.starting_price,
+            'description': self.description,
+            'date_posted': self.date_posted,
+            'image': self.image.url if self.image else None,
+            'user': self.user.to_dict() if self.user else None,
+        }
+
+
 class User(AbstractUser):
 
     username = models.CharField(max_length=50, unique=True)
-    date_of_birth =  models.DateField('Date of Birth')
+    date_of_birth = models.DateField('Date of Birth', null=True, blank=True)
     city = models.CharField(max_length=50, unique=False, blank=True)
     image = models.ImageField(upload_to='profile_picture', blank=True)
-    # answer = models.OneToOne
 
-    questions = models.ManytoManyField(
+    questions = models.ManyToManyField(
         to=Item, 
         blank=True,
         symmetrical=False,
         through = "QuestionDetails",
-        # related_name='question',
+        related_name='question_of_user',
     )
-
+# one bid many user???
     bids = models.ManyToManyField(
         to=Item, 
         blank=True,
         symmetrical=False,
         through = "BidDetails",
-        related_name='bid',
+        related_name='bid_by_user',
     )
 
 
@@ -47,8 +68,8 @@ class User(AbstractUser):
 
 
 class BidDetails(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name= "user_details_for_bid", on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, related_name="item_bid_on", on_delete=models.CASCADE)
     amount = models.FloatField()
     time = models.DateTimeField(default=timezone.now)
 
@@ -66,52 +87,45 @@ class BidDetails(models.Model):
         }
 
 
-class Item(models.Model):
-    name = models.CharField()
-    starting_price = models.FloatField(blank=False)
-    description = models.CharField(max_length=250, blank=True)
-    date_posted =  models.DateField('Date Posted')
-    image = models.ImageField(blank=True)
-    user= models.ForeignKey(User, on_delete=models.CASCADE)
+# class Item(models.Model):
+#     name = models.CharField()
+#     starting_price = models.FloatField(blank=False)
+#     description = models.CharField(max_length=250, blank=True)
+#     date_posted =  models.DateField('Date Posted')
+#     image = models.ImageField(blank=True)
+#     user= models.ForeignKey(User, on_delete=models.CASCADE)
     
 
+#     def __str__(self):
+#         return self.name
 
-    def __str__(self):
-        return self.name
 
-
-    def to_dict(self):
-        return {
-            'name': self.name,
-            'starting_price': self.starting_price,
-            'description': self.description,
-            'date_posted': self.date_posted,
-            'image': self.image.url if self.image else None,
-            'user': self.user.to_dict() if self.user else None,
-        }
+#     def to_dict(self):
+#         return {
+#             'name': self.name,
+#             'starting_price': self.starting_price,
+#             'description': self.description,
+#             'date_posted': self.date_posted,
+#             'image': self.image.url if self.image else None,
+#             'user': self.user.to_dict() if self.user else None,
+#         }
 
 # keep two models for questions and answers so you can distinguish. make sure
 #  item owner is the one who is answering the quesiton for the item
 # questions and answers have one to one relationship
 class QuestionDetails(models.Model):
-    text = models.CharField(max_length='250')
+    text = models.CharField(max_length=250)
     time = models.DateTimeField(default=timezone.now)
     user= models.ForeignKey(
         to=User,
-        related_name='posted',
+        related_name='sender',
         on_delete=models.CASCADE
     )
     item = models.ForeignKey(
         to=Item,
-        related_name='for',
+        related_name='question_for_item',
         on_delete=models.CASCADE
     )
-    # answers = models.OneToOneField(
-    #     to=Answer,
-    #     blank=True,
-    #     symmetrical=False,
-    #     related_name='questions',
-    # )
 
 
     def __str__(self):
@@ -123,23 +137,23 @@ class QuestionDetails(models.Model):
             'text': self.text,
             'time': self.time,
             'user': self.user.to_dict() if self.user else None,
-            'answers': [answer.to_dict() for answer in self.answers],
+            'item': self.item.to_dict() if self.item else None,
         }
 
 
 class AnswerDetails(models.Model):
-    text = models.CharField(max_length='250')
+    text = models.CharField(max_length=250)
     time = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(
         to= User,
         related_name='answered_by',
         on_delete=models.CASCADE
     )
-    # question = models.ForeignKey(
-    #     to= QuestionDetails,
-    #     related_name='related_to',
-    #     on_delete=models.CASCADE
-    # )
+    question = models.OneToOneField(
+        to=QuestionDetails,
+        related_name='related_to_question',
+        on_delete=models.CASCADE
+    )
 
 
     def __str__(self):
@@ -151,6 +165,7 @@ class AnswerDetails(models.Model):
             'text': self.text,
             'time': self.time,
             'user': self.user.to_dict() if self.user else None,
+            'question': self.question.to_dict() if self.question else None,
         }
 
 
