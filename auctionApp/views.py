@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse, Http404, HttpRe
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, SignupForm
-from .models import User
+from .models import User, Item
 
 
 @login_required
@@ -18,7 +18,51 @@ def index(request: HttpRequest) -> HttpResponse:
     })
 
 
-# Create your views here.
+# @login_required
+def items_api(request: HttpRequest) -> HttpResponse:
+    print("HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRE")
+    if request.method == 'GET':
+        print("Heeeeeeeeeeeeeeereeee")
+        return JsonResponse({
+            'items': [
+                item.to_dict() for item in Item.objects.all()
+            ]
+        })
+
+    return HttpResponseBadRequest("Invalid method request")
+
+
+def item_api(request: HttpRequest, item_id: int) -> JsonResponse:
+    """
+    Edits the series, or deletes, or gets, based on request
+    """
+    item = get_object_or_404(Item, id=item_id)
+
+    # if request.method == 'PUT':
+    #     data = json.loads(request.body)
+    #     series.series_title = data['serie_title']
+    #     series.release_date = data['release_date']
+    #     series.has_ended = data['has_ended']
+    #     series.number_of_seasons = data['number_of_seasons']
+    #     series.save()
+    #     return JsonResponse({})
+
+    # if request.method == 'DELETE':
+    #     series.delete()
+    #     return JsonResponse({})
+
+    if request.method == 'GET':
+        return JsonResponse({
+            'item': [
+                # item.to_dict() for item in Item.objects.all()
+                # Item.objects.get(item_id)
+                item.to_dict()
+            ]
+        })
+    return HttpResponseBadRequest("Invalid method request")
+
+
+
 def signup_view(request):
     '''
     Signup function
