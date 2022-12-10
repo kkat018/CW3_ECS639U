@@ -1,15 +1,12 @@
 
 <template>
     <div class="border rounded bg-warning shadow pt-4 vw-100 vh-100 p-3">
-        <h1>{{title}}</h1>
+        <!-- <h1>{{title}}</h1> -->
         <!-- <div class="card"> -->
         
-        <!-- Button trigger page -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
-        Add item
-        </button>
-        {{items}}
-        <div class="card-deck">
+        {{item}}
+        
+        <!-- <div class="card-deck">
             <div class="row" >
                 <div v-for="item in items" :key="item.id" class="col-sm-4">
                     <div  class="card" style="width: 18rem;">
@@ -25,9 +22,12 @@
                 </div>
                 
             </div>
-        </div>
+        </div> -->
 
-        
+        <!-- Button trigger page -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
+        Add bid
+        </button>
 
         
     </div>
@@ -40,10 +40,9 @@
 //   msg: String
 // })
 export default {
-    props: ["title"],
+    name: 'Item',
     data() {
         return {
-            items: [],
             item: {
                 name: null,
                 date_posted: new Date(),
@@ -56,13 +55,12 @@ export default {
         }
     },
     async created() {
-        let response = await fetch('http://localhost:8000/api/items/')
+        let response = await fetch(`http://localhost:8000/api/item/${this.$route.params.id}/`)
         if (response.ok) {
             let data = await response.json()
-            this.items = data.items
-            console.log(data.items)
+            this.item = data.item
         } else {
-            console.log("Failed to get items")
+            console.log("Failed to get item")
         }
     },
     methods: {

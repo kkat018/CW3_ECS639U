@@ -17,6 +17,7 @@ class Item(models.Model):
 
     def to_dict(self):
         return {
+            'id':self.id,
             'name': self.name,
             'starting_price': self.starting_price,
             'description': self.description,
@@ -61,6 +62,7 @@ class User(AbstractUser):
 
     def to_dict(self):
         return {
+            'id':self.id,
             'username': self.username,
             'date_of_birth': self.date_of_birth,
             'city': self.city,
@@ -83,6 +85,7 @@ class BidDetails(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.id,
             'amount': self.amount,
             'time': self.time,
             'user': self.user.to_dict() if self.user else None,
@@ -137,6 +140,7 @@ class QuestionDetails(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.id,
             'text': self.text,
             'time': self.time,
             'user': self.user.to_dict() if self.user else None,
@@ -165,6 +169,7 @@ class AnswerDetails(models.Model):
 
     def to_dict(self):
         return {
+            'id':self.id,
             'text': self.text,
             'time': self.time,
             'user': self.user.to_dict() if self.user else None,

@@ -20,9 +20,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
 # @login_required
 def items_api(request: HttpRequest) -> HttpResponse:
-    print("HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRE")
     if request.method == 'GET':
-        print("Heeeeeeeeeeeeeeereeee")
         return JsonResponse({
             'items': [
                 item.to_dict() for item in Item.objects.all()

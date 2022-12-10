@@ -1,47 +1,38 @@
 <template>
-    <div>
-        <!-- <button @click="fetchMovies"> Fetch Movies</button> -->
-        <div>
-            <ul>
-                <li v-for="item in items">
-                    {{item.name}}
-                </li>
-            </ul>
-        </div>
-        
-        <Home title="My favourite TV list" class="vh-100"/>
-    </div>
+    
+    <router-view />
+    
 </template>
 
 <script>
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import Home from "./components/Home.vue";
+import Home from "./components/pages/Home.vue";
 // import Modal from "./components/Modal.vue"
 
 export default {
+    name: 'AuctionApp',
     components: {
         Home,
-        
     },
     data() {
         return {
             items: [],
             item: {
                 name: null,
-                date_posted: new Date()
-            }
-        }
+                date_posted: new Date(),
+            },
+        };
     },
     methods: {
         async fetchMovies() {
             //perform AJAX request to fetch movies
-            let response = await fetch("http://localhost:8000/api/movies/")
-            let data = await response.json()
-            this.items = data.items
+            let response = await fetch("http://localhost:8000/api/movies/");
+            let data = await response.json();
+            this.items = data.items;
         },
-    }
-}
+    },
+};
 </script>
 
 <style scoped>
