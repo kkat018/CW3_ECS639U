@@ -10,6 +10,7 @@ class Item(models.Model):
     date_posted = models.DateField('Date Posted')
     image = models.ImageField(blank=True)
     user = models.ForeignKey("User", related_name= "owner", on_delete=models.CASCADE)
+    expiry_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -22,6 +23,7 @@ class Item(models.Model):
             'date_posted': self.date_posted,
             'image': self.image.url if self.image else None,
             'user': self.user.to_dict() if self.user else None,
+            'expiry_date': self.expiry_date,
         }
 
 
@@ -71,7 +73,7 @@ class BidDetails(models.Model):
     user = models.ForeignKey(User, related_name= "user_details_for_bid", on_delete=models.CASCADE)
     item = models.ForeignKey(Item, related_name="item_bid_on", on_delete=models.CASCADE)
     amount = models.FloatField()
-    time = models.DateTimeField(default=timezone.now)
+    time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.item.name
@@ -115,8 +117,8 @@ class BidDetails(models.Model):
 # questions and answers have one to one relationship
 class QuestionDetails(models.Model):
     text = models.CharField(max_length=250)
-    time = models.DateTimeField(default=timezone.now)
-    user= models.ForeignKey(
+    time = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(
         to=User,
         related_name='sender',
         on_delete=models.CASCADE
@@ -143,7 +145,7 @@ class QuestionDetails(models.Model):
 
 class AnswerDetails(models.Model):
     text = models.CharField(max_length=250)
-    time = models.DateTimeField(default=timezone.now)
+    time = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(
         to= User,
         related_name='answered_by',
