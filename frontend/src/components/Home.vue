@@ -1,7 +1,12 @@
 
 <template>
     <h1>All Items</h1>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">Add item</button>
+   
+       <router-link to="/addItem">
+           <button @click="addItem" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
+                Add item
+            </button>
+        </router-link> 
     <div class="destinations">
         <router-link v-for="destination in destinations"
         :key="destination.id"
@@ -22,7 +27,13 @@ export default {
             destinations: sourceData.destinations
         }
     },
+    methods: {
+        async addItem(){
+
+        }
+    }
 }
+
 
 
 </script>

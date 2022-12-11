@@ -167,6 +167,21 @@ a {
   margin: 0 auto;
 }
 
+.form-item {
+  margin-bottom: 1em;
+}
+
+#file-input {
+  display: flex;
+  flex-direction: column;
+}
+
+#file-input label, #file-input input {
+  display: block;
+  margin: auto;
+  margin-top: 0.5em;
+}
+
 .input{
   border: 1px solid gray;
   padding: 10px;

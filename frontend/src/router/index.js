@@ -6,6 +6,7 @@ const routes = [
     { path: '/', name:'Home', component: Home },
     { path: '/Brazil', name:'Brazil', component: ()=>import('../components/Brazil.vue') },
     { path: '/item', name:'Item', component: ()=>import('../components/Item.vue') },
+    { path: '/addItem', name:'AddItem', component: ()=>import('../components/AddItemForm.vue') },
     { path: '/item/:id', name:'destination.show', component: ()=>import('../components/ItemShow.vue') },
 ]
 

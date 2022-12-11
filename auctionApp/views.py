@@ -5,6 +5,7 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, SignupForm
 from .models import User, Item
+import json
 
 
 @login_required
@@ -28,6 +29,33 @@ def items_api(request: HttpRequest) -> HttpResponse:
         })
 
     return HttpResponseBadRequest("Invalid method request")
+
+
+
+
+def create_item_api(request: HttpRequest) -> JsonResponse:
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf8')
+        body = json.loads(body_unicode)
+
+        name =  body['name']
+        price = body['price']
+        description = body['description']
+        # image = body['image']
+        expiry_date = body['expiry_date']
+
+        newItem = Item.objects.create (
+            name = name,
+            starting_price = price,
+            description = description,
+            expiry_date = expiry_date,
+        )
+
+        return JsonResponse(newItem.to_dict())
+    return HttpResponseBadRequest("Invalid method request")
+
+
+
 
 
 def item_api(request: HttpRequest, item_id: int) -> JsonResponse:

@@ -7,10 +7,10 @@ class Item(models.Model):
     name = models.CharField(max_length=100)
     starting_price = models.FloatField(blank=False)
     description = models.CharField(max_length=250, blank=True)
-    date_posted = models.DateField('Date Posted')
+    date_posted = models.DateField('Date Posted', auto_now=True)
     image = models.ImageField(blank=True)
     user = models.ForeignKey("User", null=True, blank=True, related_name= "owns", on_delete=models.CASCADE)
-    expiry_date = models.DateTimeField(auto_now=True)
+    expiry_date = models.DateTimeField('Bid Expiry Date')
 
     def __str__(self):
         return self.name
@@ -34,10 +34,9 @@ class User(AbstractUser):
     date_of_birth = models.DateField('Date of Birth', null=True, blank=True)
     city = models.CharField(max_length=50, unique=False, blank=True)
     image = models.ImageField(upload_to='profile_picture', blank=True)
-    
 
     questions = models.ManyToManyField(
-        to=Item, 
+        to=Item,
         blank=True,
         symmetrical=False,
         through = "QuestionDetails",
@@ -45,7 +44,7 @@ class User(AbstractUser):
     )
 # one bid many user???
     bids = models.ManyToManyField(
-        to=Item, 
+        to=Item,
         blank=True,
         symmetrical=False,
         through = "BidDetails",
@@ -92,29 +91,6 @@ class BidDetails(models.Model):
             'item': self.item.to_dict() if self.item else None,
         }
 
-
-# class Item(models.Model):
-#     name = models.CharField()
-#     starting_price = models.FloatField(blank=False)
-#     description = models.CharField(max_length=250, blank=True)
-#     date_posted =  models.DateField('Date Posted')
-#     image = models.ImageField(blank=True)
-#     user= models.ForeignKey(User, on_delete=models.CASCADE)
-    
-
-#     def __str__(self):
-#         return self.name
-
-
-#     def to_dict(self):
-#         return {
-#             'name': self.name,
-#             'starting_price': self.starting_price,
-#             'description': self.description,
-#             'date_posted': self.date_posted,
-#             'image': self.image.url if self.image else None,
-#             'user': self.user.to_dict() if self.user else None,
-#         }
 
 # keep two models for questions and answers so you can distinguish. make sure
 #  item owner is the one who is answering the quesiton for the item
