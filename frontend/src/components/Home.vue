@@ -6,13 +6,13 @@
                 Add item
             </button>
         </router-link>
-    <div class="destinations">
+    <!-- <div class="destinations">
         <router-link v-for="destination in destinations"
         :key="destination.id"
         :to="{name:'destination.show', params:{id:destination.id}}">
             <img :src="`/images/${destination.image}`" alt="destination.name">
         </router-link>
-    </div>
+    </div> -->
 
     <!-- Nada's code -->
     {{items}}
@@ -50,16 +50,16 @@ export default {
     data() {
         return {
             destinations: sourceData.destinations, //temporary code for printing dummy data
-            // items: [],
-            // item: {
-            //     name: null,
-            //     date_posted: new Date(),
-            //     starting_price: 0,
-            //     description: "",
-            //     image: "",
-            //     user: null,
-            //     expiry_date: new Date(),
-            // },
+            items: [],
+            item: {
+                name: null,
+                date_posted: new Date(),
+                starting_price: 0,
+                description: "",
+                image: "",
+                user: null,
+                expiry_date: new Date(),
+            },
         }
     },
     // Nada's code:

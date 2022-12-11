@@ -8,7 +8,7 @@ from .models import User, Item
 import json
 
 
-@login_required
+# @login_required
 def index(request: HttpRequest) -> HttpResponse:
     """
     Initial index url path will route here
@@ -31,8 +31,7 @@ def items_api(request: HttpRequest) -> HttpResponse:
     return HttpResponseBadRequest("Invalid method request")
 
 
-
-
+@login_required
 def create_item_api(request: HttpRequest) -> JsonResponse:
     if request.method == 'POST':
         body_unicode = request.body.decode('utf8')

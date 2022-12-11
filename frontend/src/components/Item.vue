@@ -1,6 +1,6 @@
 
 <template>
-    <div class="border rounded bg-warning shadow pt-4 vw-100 vh-100 p-3">
+    <div>
         <!-- <h1>{{title}}</h1> -->
         <!-- <div class="card"> -->
         
