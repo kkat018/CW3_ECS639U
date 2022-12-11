@@ -6,7 +6,7 @@ const routes = [
     { path: '/', name:'Home', component: Home },
     { path: '/Brazil', name:'Brazil', component: ()=>import('../components/Brazil.vue') },
     { path: '/item', name:'Item', component: ()=>import('../components/Item.vue') },
-    { path: '/item/:id', name:'item.show', component: ()=>import('../components/ItemShow.vue') },
+    { path: '/item/:id', name:'destination.show', component: ()=>import('../components/ItemShow.vue') },
 ]
 
 const router = createRouter({

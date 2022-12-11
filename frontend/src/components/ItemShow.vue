@@ -19,7 +19,6 @@ export default {
         destinationId() {
             return parseInt(this.$route.params.id)
         },
-    
         destination(){
             return sourceData.destinations.find(destination => destination.id === this.destinationId)
         }
