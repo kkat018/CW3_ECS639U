@@ -1,24 +1,22 @@
 <template>
-
-<router-view></router-view>
-<router-link to="/">Home</router-link>
-<router-link to="/item/:id">Item</router-link>
+    <TheNavigation/>
+    <div clas="container">
+        <router-view></router-view>
+    </div>
 
 </template>
 
 <script>
 
+import TheNavigation from './components/TheNavigation.vue'
+
+export default {
+    components: {TheNavigation}
+}
+
 </script>
 
 
-<style>
-
-#app {
-    font-family: Avenir, Helvetica,Arial, sans-serif;
-    text-align: center;
-}
-
-</style>
 
 
 
