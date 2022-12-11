@@ -1,9 +1,8 @@
 
 <template>
     <div class="border rounded bg-warning shadow pt-4 vw-100 vh-100 p-3">
-        <h1>{{title}}</h1>
+        <h1>Auction App</h1>
         <!-- <div class="card"> -->
-        
         <!-- Button trigger page -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
         Add item
@@ -17,19 +16,16 @@
                             <h5 class="card-title">{{item.name}}</h5>
                             <h6 class="card-subtitle mb-2 text-muted">Release date: {{item.date_posted}}</h6>
                             <p class="card-text">TV show <br/> Number of seasons: {{item.expiry_date}} <br/> Has ended: {{item.starting_price}} </p>
-                            
-                            
+
                             <button @click="goToItem(item)" type="button" class="btn btn-light">Open</button>
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
 
-        
 
-        
     </div>
 </template>
 
@@ -74,7 +70,7 @@ export default {
             // let data = await response.json()
             // this.items = data.items
         },
-        
+
     }
 }
 
