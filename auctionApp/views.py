@@ -147,7 +147,7 @@ def login_view(request):
             user = auth.authenticate(username=username, password=password)
             if user is not None:
                 auth.login(request, user)
-                return redirect('auctionApp:home')
+                return redirect('http://localhost:8001/')
 
             # failed authentication
             form.add_error('username', 'Invalid credentials')
@@ -165,3 +165,13 @@ def logout_view(request):
 
     auth.logout(request)
     return redirect('auctionApp:login')
+
+def check_user_authenticated(request):
+    if request.method == 'GET':
+        print(request)
+        if request.user.is_authenticated:
+            return JsonResponse({
+                'user_id': request.user.id
+            })
+        return HttpResponse("Unauthourised", status=401)
+

@@ -6,16 +6,7 @@
                 Add item
             </button>
         </router-link>
-    <!-- <div class="destinations">
-        <router-link v-for="destination in destinations"
-        :key="destination.id"
-        :to="{name:'destination.show', params:{id:destination.id}}">
-            <img :src="`/images/${destination.image}`" alt="destination.name">
-        </router-link>
-    </div> -->
 
-    <!-- Nada's code -->
-    {{items}}
         <div class="card-deck">
             <div class="row" >
                 <div v-for="item in items" :key="item.id" class="col-sm-4">
@@ -31,14 +22,10 @@
                 </div>
             </div>
         </div>
-    <!--  -->
 
 </template>
 
 <script>
-
-import sourceData from '../data.json'
-
 // import { ref } from 'vue'
 
 // defineProps({
@@ -49,7 +36,6 @@ export default {
     props: ["title"],
     data() {
         return {
-            destinations: sourceData.destinations, //temporary code for printing dummy data
             items: [],
             item: {
                 name: null,
@@ -62,7 +48,6 @@ export default {
             },
         }
     },
-    // Nada's code:
     async created() {
         let response = await fetch('http://localhost:8000/api/items/')
         if (response.ok) {
