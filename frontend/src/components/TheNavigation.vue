@@ -2,13 +2,13 @@
     <div id="nav">
         <div class="nav__inner">
             <div class="flex center">
-                <h1 id="main-title">Auction App</h1>
+                <p id="main-title">Auction App</p>
                 <router-link to="/">Home</router-link>
                 <router-link to="/profile">Profile</router-link>
             </div>
             <div class="center">
                 <div class="flex center" v-if="viewable==true">
-                    <p class="mb-0 mr-32">Welcome {{this.user}}</p>
+                    <p class="mb-0 mr-32">Welcome {{this.user.username}}!</p>
                     <a href="http://localhost:8000/logout">Logout</a>
                 </div>
                 <div class="center" v-if="viewable==false">

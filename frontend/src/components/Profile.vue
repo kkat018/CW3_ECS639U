@@ -1,11 +1,23 @@
 <template>
-    Profile
-    {{this.user}}
-    <!-- {{this.user.city}} -->
-
-    <!-- <div v-for="detail in user">
-        {{detail}}
-    </div> -->
+    <div class="profile">
+        <h1 class="mb-32">{{this.user.username}}</h1>
+        <div class="flex">
+            <figure class="profile__image">
+                <img src="../assets/yabe.png" alt={{this.user.username}} width="500" height="600"> 
+            </figure>
+            <div class="profile__details">
+                <div class="mb-32" v-if="this.user.date_of_birth !== null">
+                    <p class="heading">Date of Birth</p>
+                    <p class="details">{{ this.user.date_of_birth }}</p>
+                </div>
+                <div v-if="this.user.city !== null">
+                    <p class="heading">City</p>
+                    <p class="details">{{ this.user.city }}</p>
+                </div>
+            </div>
+        </div>
+        {{this.user}}
+    </div>
 </template>
 
 <script>
@@ -33,7 +45,7 @@ export default {
         } );
         let data = await response.json();
         // JSON.parse(data);
-        // console.log(data.username);
+        console.log(data.city);
         if(data.status !==401) {
             this.viewable = true;
             this.user = data;

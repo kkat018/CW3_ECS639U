@@ -1,7 +1,7 @@
 <template>
     <div>
         <TheNavigation/>
-        <div class="container" v-if="viewable==true">
+        <div v-if="viewable==true">
             <router-view></router-view>
         </div>
         <div class="container" v-if="viewable==false">

@@ -172,9 +172,7 @@ def check_user_authenticated(request):
     '''
     if request.method == 'GET':
         if request.user.is_authenticated:
-            return JsonResponse({
-                'user': [ request.user.to_dict()]
-            })
+            return JsonResponse(request.user.to_dict())
         return HttpResponse("Unauthourised", status=401)
 
 def profile_api(request):
