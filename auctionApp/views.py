@@ -182,11 +182,26 @@ def profile_api(request):
     GET - Retrieves user (profile) details and returns them
     PUT - Allows you to edit user (profile) details
     '''
-    if request.method == 'GET':
+    # if request.method == 'GET':
+
+    #     body_unicode = request.body.decode('utf8')
+    #     body = json.loads(body_unicode)
+
+    #     user_id = body['id']
+    #     user = get_object_or_404(User, id=user_id)
+    #     return JsonResponse( user.to_dict())
+
+    if request.method == 'PUT':
 
         body_unicode = request.body.decode('utf8')
         body = json.loads(body_unicode)
 
-        employee_id = body['id']
-        employee = get_object_or_404(User, id=user_id)
+        user_id = body['id']
+        user = get_object_or_404(User, id=user_id)
+
+        user.username = body['username'];
+        user.date_of_birth = body['date_of_birth'];
+        user.city = body['city'];
+        user.save()
+
         return JsonResponse( user.to_dict())

@@ -1,23 +1,50 @@
 <template>
     <div class="profile">
-        <h1 class="mb-32">{{this.user.username}}</h1>
         <div class="flex">
-            <figure class="profile__image">
-                <img src="../assets/yabe.png" alt={{this.user.username}} width="500" height="600"> 
+            <h1 class="mb-32 mr-32" v-if="this.editMode == false">{{this.user.username}}</h1>
+            <p class="mr-32" v-if="this.editMode == true">
+                <input id="editUsername" type="text" :value="this.user.username"/>
+            </p>
+            <div class="flex-column">
+                <button v-if="this.editMode == false" @click="toggleEdit()" type="button" class="btn btn-success mt-8">Edit</button>
+                <button v-if="this.editMode == true" @click=" editUser()" type="button" class="btn btn-success">Save</button>
+            </div>
+        </div>
+        <div class="flex mt-8">
+            <figure class="profile__image" v-if="this.editMode == false">
+                <img src="../assets/yabe.png" alt="${this.user.username}" width="500" height="600">
+                <!-- <img :src="'../assets/' + user.username"> -->
             </figure>
-            <div class="profile__details">
-                <div class="mb-32" v-if="this.user.date_of_birth !== null">
-                    <p class="heading">Date of Birth</p>
-                    <p class="details">{{ this.user.date_of_birth }}</p>
+            <figure class="profile__image" v-if="this.editMode == true">
+                 <input type="file" name="fileToUpload" id="fileToUpload">
+            </figure>
+            <div class="flex-column">
+                <div class="flex mb-32" v-if="this.user.date_of_birth !== null">
+                    <div class="flex-column mr-32">
+                        <p class="heading">Date of Birth</p>
+                        <p class="details" v-if="this.editMode == false">
+                            {{ this.user.date_of_birth }}
+                        </p>
+                        <p v-if="this.editMode == true">
+                            <input id="editBirthDate" type="date" :value="this.user.date_of_birth"/>
+                        </p>
+                    </div>
                 </div>
-                <div v-if="this.user.city !== null">
-                    <p class="heading">City</p>
-                    <p class="details">{{ this.user.city }}</p>
+                <div class="flex" v-if="this.user.city !== null">
+                    <div class="flex-column mr-32">
+                        <p class="heading">City</p>
+                        <p class="details" v-if="this.editMode == false">
+                            {{ this.user.city }}
+                        </p>
+                        <p v-if="this.editMode == true">
+                            <input id="editCity" type="text" :value="this.user.city"/>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-        {{this.user}}
     </div>
+    {{this.user}}
 </template>
 
 <script>
@@ -34,6 +61,7 @@ export default {
             //     image: "",
             // },
             user: null,
+            editMode: false,
         }
     },
     async mounted() {
@@ -50,12 +78,28 @@ export default {
             this.viewable = true;
             this.user = data;
         }
+    },
+    methods: {
+        async toggleEdit() {
+            this.editMode = true;
+        },
+        async editUser() {
+            this.editMode = false;
+            let response = await fetch( "http://127.0.0.1:8000/api/profile/", {
+                method: "PUT",
+                body: JSON.stringify({
+                    "id": this.user.id,
+                    "username": document.getElementById( "editUsername" ).value,
+                    "date_of_birth": document.getElementById( "editBirthDate" ).value,
+                    "city": document.getElementById( "editCity" ).value,
+                })
+            });
+            let res = await response.json();
 
-        //Perform an Ajax request to fetch the user's Profile details
-        // let response2 = await fetch( "http://127.0.0.1:8000/api/profile/");
-        // let data2 = await response2.json();
-        // this.profile = data2.employees;
-        // console.log(this.profile);
+            this.user.username = res.username;
+            this.user.date_of_birth = res.date_of_birth;
+            this.user.city = res.city;
+        },
     }
 }
 
