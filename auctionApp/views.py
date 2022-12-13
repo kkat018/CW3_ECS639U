@@ -31,7 +31,7 @@ def items_api(request: HttpRequest) -> HttpResponse:
     return HttpResponseBadRequest("Invalid method request")
 
 
-@login_required
+# @login_required
 def create_item_api(request: HttpRequest) -> JsonResponse:
     if request.method == 'POST':
         body_unicode = request.body.decode('utf8')
@@ -167,11 +167,28 @@ def logout_view(request):
     return redirect('auctionApp:login')
 
 def check_user_authenticated(request):
+    '''
+    Checks if user is authenticated, returns user details as a dictionary if they are
+    '''
     if request.method == 'GET':
-        print(request)
         if request.user.is_authenticated:
             return JsonResponse({
-                'user_id': request.user.id
+                'user': [ request.user.to_dict()]
             })
         return HttpResponse("Unauthourised", status=401)
 
+def profile_api(request):
+    '''
+    This method is responsible for handling requests for the Profile API:
+
+    GET - Retrieves user (profile) details and returns them
+    PUT - Allows you to edit user (profile) details
+    '''
+    if request.method == 'GET':
+
+        body_unicode = request.body.decode('utf8')
+        body = json.loads(body_unicode)
+
+        employee_id = body['id']
+        employee = get_object_or_404(User, id=user_id)
+        return JsonResponse( user.to_dict())

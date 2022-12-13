@@ -24,6 +24,9 @@ a:visited {
   max-width: 960px;
 }
 
+.container-list {
+  margin-top:10rem;
+}
 /* Home */
 .home img {
   max-width: 230px;
@@ -48,7 +51,7 @@ a:visited {
   border-bottom: 5px solid #4e6c71;
   z-index: 2;
 }
-#nav a {
+#nav a  {
   display: inline-block;
   margin-right: 20px;
   color: white;
@@ -195,4 +198,31 @@ a {
   padding: 10px;
   border-radius: 5px;
   border:none;
+}
+
+.flex {
+  display: flex;
+}
+
+.nav__inner {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mr-32 {
+  margin-right: 2rem;
+}
+
+#main-title{
+  padding-right: 2rem;
 }

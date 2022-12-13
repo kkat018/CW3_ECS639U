@@ -22,14 +22,13 @@ export default {
         }
     },
     async mounted() {
-        //Perform an Ajax request to fetch the list of employees
+        //Check if user is authenticated
         let response = await fetch( "http://localhost:8000/api/checkSession", {
             credentials: "include",
             mode: "cors",
             referrerPolicy: "no-referrer"
         } );
         let data = await response.json();
-        console.log(data);
         if(data.status !==401) {
             this.viewable = true;
         }

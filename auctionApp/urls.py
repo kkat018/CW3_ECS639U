@@ -21,4 +21,7 @@ urlpatterns = [
     path('api/addItem/', views.create_item_api, name='add_item_api'),
 
     path('api/checkSession/', views.check_user_authenticated),
+
+    path('api/profile/', views.profile_api),
+
 ]

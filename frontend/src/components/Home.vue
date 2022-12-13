@@ -1,5 +1,6 @@
 
 <template>
+    <div class="container container-list">
     <h1>All Items</h1>
        <router-link to="/addItem">
            <button @click="addItem" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
@@ -22,6 +23,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
 </template>
 
