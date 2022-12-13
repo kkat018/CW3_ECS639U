@@ -37,13 +37,18 @@ def create_item_api(request: HttpRequest) -> JsonResponse:
         body_unicode = request.body.decode('utf8')
         body = json.loads(body_unicode)
 
+        user_id =  body['user_id']
         name =  body['name']
         price = body['price']
         description = body['description']
         # image = body['image']
         expiry_date = body['expiry_date']
 
+        # Get user instance by using the user id
+        user = get_object_or_404(User, id=user_id)
+
         newItem = Item.objects.create (
+            user = user,
             name = name,
             starting_price = price,
             description = description,

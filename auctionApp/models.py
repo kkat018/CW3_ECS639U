@@ -9,8 +9,8 @@ class Item(models.Model):
     description = models.CharField(max_length=250, blank=True)
     date_posted = models.DateField('Date Posted', auto_now=True)
     image = models.ImageField(upload_to='assets/', blank=True)
-    user = models.ForeignKey("User", null=True, blank=True, related_name= "owns", on_delete=models.CASCADE)
     expiry_date = models.DateTimeField('Bid Expiry Date')
+    user = models.ForeignKey("User", null=True, blank=True, related_name= "owns", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

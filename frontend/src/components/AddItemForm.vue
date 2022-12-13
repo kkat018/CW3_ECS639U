@@ -30,7 +30,20 @@
 export default {
     data() {
         return {
-            
+            user: null,
+        }
+    },
+    async mounted() {
+        //Check if user is authenticated [replace with user prop from App.vue]
+        let response = await fetch( "http://localhost:8000/api/checkSession", {
+            credentials: "include",
+            mode: "cors",
+            referrerPolicy: "no-referrer"
+        } );
+        let data = await response.json();
+        if(data.status !==401) {
+            this.viewable = true;
+            this.user = data;
         }
     },
     methods: {
@@ -43,6 +56,7 @@ export default {
                 {
                     method: 'POST',
                     body: JSON.stringify({
+                        "user_id": this.user.id,
                         "name": name.value,
                         "price": price.value,
                         "description": description.value,
