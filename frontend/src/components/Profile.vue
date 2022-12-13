@@ -1,50 +1,56 @@
 <template>
     <div class="profile">
-        <div class="flex">
-            <h1 class="mb-32 mr-32" v-if="this.editMode == false">{{this.user.username}}</h1>
-            <p class="mr-32" v-if="this.editMode == true">
-                <input id="editUsername" type="text" :value="this.user.username"/>
-            </p>
-            <div class="flex-column">
-                <button v-if="this.editMode == false" @click="toggleEdit()" type="button" class="btn btn-success mt-8">Edit</button>
-                <button v-if="this.editMode == true" @click=" editUser()" type="button" class="btn btn-success">Save</button>
-            </div>
-        </div>
+        <h1 class="mb-32 mr-32" v-if="this.editMode == false">{{this.user.username}}</h1>
+        <p class="mr-32" v-if="this.editMode == true">
+            <input id="editUsername" type="text" :value="this.user.username"/>
+        </p>
         <div class="flex mt-8">
-            <figure class="profile__image" v-if="this.editMode == false">
-                <img src="../assets/yabe.png" alt="${this.user.username}" width="500" height="600">
-                <!-- <img :src="'../assets/' + user.username"> -->
-            </figure>
-            <figure class="profile__image" v-if="this.editMode == true">
+            <div class="flex mr-32">
+                <figure class="profile__image">
+                    <img v-if="this.editModeImage == false && this.user.image !== null" :src="'http://localhost:8000' + this.user.image"  :alt="this.user.username" width="500" height="600">
+                    <!-- <img v-if="this.editMode == false" :src="'../../media/assets/profile/default.jpg' + this.user.username"  :alt="this.user.username" width="500" height="600"></img> -->
+                    <input v-if="this.editModeImage == true" type="file" class="form-control-file" id="editImage">
+                </figure>
+                <div class="flex-column">
+                    <button v-if="this.editModeImage == false" @click="toggleEditImage()" type="button" class="btn btn-success mt-8">Edit</button>
+                    <button v-if="this.editModeImage == true" @click=" editUserImage()" type="button" class="btn btn-success">Save Image</button>
+                </div>
+            </div>
+            <!-- <figure class="profile__image" v-if="this.editMode == true">
                  <input type="file" name="fileToUpload" id="fileToUpload">
-            </figure>
-            <div class="flex-column">
-                <div class="flex mb-32" v-if="this.user.date_of_birth !== null">
-                    <div class="flex-column mr-32">
-                        <p class="heading">Date of Birth</p>
-                        <p class="details" v-if="this.editMode == false">
-                            {{ this.user.date_of_birth }}
-                        </p>
-                        <p v-if="this.editMode == true">
-                            <input id="editBirthDate" type="date" :value="this.user.date_of_birth"/>
-                        </p>
+            </figure> -->
+            <div class="flex">
+                <div class="flex-column">
+                    <div class="flex mb-32" v-if="this.user.date_of_birth !== null">
+                        <div class="flex-column mr-32">
+                            <p class="heading">Date of Birth</p>
+                            <p class="details" v-if="this.editMode == false">
+                                {{ this.user.date_of_birth }}
+                            </p>
+                            <p v-if="this.editMode == true">
+                                <input id="editBirthDate" type="date" :value="this.user.date_of_birth"/>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex" v-if="this.user.city !== null">
+                        <div class="flex-column mr-32">
+                            <p class="heading">City</p>
+                            <p class="details" v-if="this.editMode == false">
+                                {{ this.user.city }}
+                            </p>
+                            <p v-if="this.editMode == true">
+                                <input id="editCity" type="text" :value="this.user.city"/>
+                            </p>
+                        </div>
                     </div>
                 </div>
-                <div class="flex" v-if="this.user.city !== null">
-                    <div class="flex-column mr-32">
-                        <p class="heading">City</p>
-                        <p class="details" v-if="this.editMode == false">
-                            {{ this.user.city }}
-                        </p>
-                        <p v-if="this.editMode == true">
-                            <input id="editCity" type="text" :value="this.user.city"/>
-                        </p>
-                    </div>
+                <div class="flex-column">
+                    <button v-if="this.editMode == false" @click="toggleEdit()" type="button" class="btn btn-success mt-8">Edit</button>
+                    <button v-if="this.editMode == true" @click=" editUser()" type="button" class="btn btn-success">Save</button>
                 </div>
             </div>
         </div>
     </div>
-    {{this.user}}
 </template>
 
 <script>
@@ -52,36 +58,20 @@
 export default {
     data() {
         return {
-            viewable: false,
-            // user: {
-            //     id: null,
-            //     username: 'Bob',
-            //     date_of_birth: new Date(),
-            //     city: "",
-            //     image: "",
-            // },
-            user: null,
             editMode: false,
+            editModeImage: false,
         }
     },
-    async mounted() {
-        //Check if user is authenticated [replace with user prop from App.vue]
-        let response = await fetch( "http://localhost:8000/api/checkSession", {
-            credentials: "include",
-            mode: "cors",
-            referrerPolicy: "no-referrer"
-        } );
-        let data = await response.json();
-        // JSON.parse(data);
-        console.log(data.city);
-        if(data.status !==401) {
-            this.viewable = true;
-            this.user = data;
-        }
+    props: ['user'],
+    async created() {
+        // console.log(this.user.image.url); //test
     },
     methods: {
         async toggleEdit() {
             this.editMode = true;
+        },
+        async toggleEditImage() {
+            this.editModeImage = true;
         },
         async editUser() {
             this.editMode = false;
@@ -95,11 +85,37 @@ export default {
                 })
             });
             let res = await response.json();
-
             this.user.username = res.username;
             this.user.date_of_birth = res.date_of_birth;
             this.user.city = res.city;
+
+            console.log(res);
         },
+        async editUserImage() {
+            this.editModeImage = false;å
+            const userData = new FormData();
+            userData.append('user_id', this.user.id); //need id to know whose image to save into
+            userData.append('image', document.getElementById('editImage').files[0]);
+
+            // send the form data object to the server for editing user image
+            const response_image = await fetch('http://localhost:8000/api/profile/', {
+                method: 'POST',
+                body: userData
+            });
+
+            // get the response from the server
+            if(response_image.ok) {
+                alert("Image added successfully");
+            } else {
+                alert("Image not added");
+            }
+
+            //update data state
+            let res = await response_image.json();
+            this.user.image = res.image
+            console.log(res);
+            
+        }
     }
 }
 

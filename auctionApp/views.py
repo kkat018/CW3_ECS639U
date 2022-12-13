@@ -8,6 +8,7 @@ from .models import User, Item
 import json
 
 
+
 # @login_required
 def index(request: HttpRequest) -> HttpResponse:
     """
@@ -33,30 +34,27 @@ def items_api(request: HttpRequest) -> HttpResponse:
 
 # @login_required
 def create_item_api(request: HttpRequest) -> JsonResponse:
-    if request.method == 'POST':
-        body_unicode = request.body.decode('utf8')
-        body = json.loads(body_unicode)
-
-        user_id =  body['user_id']
-        name =  body['name']
-        price = body['price']
-        description = body['description']
-        # image = body['image']
-        expiry_date = body['expiry_date']
-
-        # Get user instance by using the user id
-        user = get_object_or_404(User, id=user_id)
-
-        newItem = Item.objects.create (
-            user = user,
-            name = name,
-            starting_price = price,
-            description = description,
-            expiry_date = expiry_date,
+    if request.method == "POST":
+        # Create a new item in the database
+        print(request.body)
+        newItem = Item.objects.create(
+            name = request.POST['name'],
+            description = request.POST['description'],
+            starting_price = request.POST['price'],
+            expiry_date = request.POST['date'],
+            user = User.objects.get(id=request.POST['user_id'])
         )
 
+        # Check if an image was uploaded
+        if 'image' in request.FILES:
+            # Set the image to the image uploaded
+            newItem.image = request.FILES['image']
+
+        # Save the new item to the database
+        newItem.save()
+
+        # Return the new item
         return JsonResponse(newItem.to_dict())
-    return HttpResponseBadRequest("Invalid method request")
 
 
 
@@ -173,7 +171,7 @@ def logout_view(request):
 
 def check_user_authenticated(request):
     '''
-    Checks if user is authenticated, returns user details as a dictionary if they are
+    Checks if user is authenticated -- returns user details as a dictionary if they are
     '''
     if request.method == 'GET':
         if request.user.is_authenticated:
@@ -182,19 +180,11 @@ def check_user_authenticated(request):
 
 def profile_api(request):
     '''
-    This method is responsible for handling requests for the Profile API:
+    This method is responsible for handling edit requests for the Profile API:
 
-    GET - Retrieves user (profile) details and returns them
-    PUT - Allows you to edit user (profile) details
+    PUT - For editing user (profile) details
+    POST - For editing image of user
     '''
-    # if request.method == 'GET':
-
-    #     body_unicode = request.body.decode('utf8')
-    #     body = json.loads(body_unicode)
-
-    #     user_id = body['id']
-    #     user = get_object_or_404(User, id=user_id)
-    #     return JsonResponse( user.to_dict())
 
     if request.method == 'PUT':
 
@@ -210,3 +200,15 @@ def profile_api(request):
         user.save()
 
         return JsonResponse( user.to_dict())
+
+    if request.method == 'POST':
+        # Check if an image was uploaded
+        if 'image' in request.FILES:
+
+            #Get user to update their image
+            user = User.objects.get(id=request.POST['user_id'])
+
+            # Set the image to the image uploaded
+            user.image = request.FILES['image']
+            user.save()
+            return JsonResponse( user.to_dict())

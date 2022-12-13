@@ -1,6 +1,8 @@
 from django.urls import path
 
 from auctionApp import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 app_name = 'auctionApp'
 
@@ -25,3 +27,5 @@ urlpatterns = [
     path('api/profile/', views.profile_api),
 
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

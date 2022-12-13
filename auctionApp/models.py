@@ -8,7 +8,7 @@ class Item(models.Model):
     starting_price = models.FloatField(blank=False)
     description = models.CharField(max_length=250, blank=True)
     date_posted = models.DateField('Date Posted', auto_now=True)
-    image = models.ImageField(upload_to='assets/', blank=True)
+    image = models.ImageField(upload_to='assets/', default="assets/default.jpg")
     expiry_date = models.DateTimeField('Bid Expiry Date')
     user = models.ForeignKey("User", null=True, blank=True, related_name= "owns", on_delete=models.CASCADE)
 
@@ -33,7 +33,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=50, unique=True)
     date_of_birth = models.DateField('Date of Birth', null=True, blank=True)
     city = models.CharField(max_length=50, unique=False, blank=True)
-    image = models.ImageField(upload_to='profile_picture', blank=True)
+    image = models.ImageField(upload_to='assets/', blank=True)
 
     questions = models.ManyToManyField(
         to=Item,

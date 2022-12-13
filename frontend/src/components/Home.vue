@@ -35,7 +35,7 @@
 // })
 export default {
     name: 'Home',
-    props: ["title"],
+    props: ['user'],
     data() {
         return {
             items: [],

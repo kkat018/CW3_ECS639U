@@ -7,11 +7,11 @@
                 <router-link to="/profile">Profile</router-link>
             </div>
             <div class="center">
-                <div class="flex center" v-if="viewable==true">
+                <div class="flex center" v-if="this.user !== null">
                     <p class="mb-0 mr-32">Welcome {{this.user.username}}!</p>
                     <a href="http://localhost:8000/logout">Logout</a>
                 </div>
-                <div class="center" v-if="viewable==false">
+                <div class="center" v-if="this.user == null">
                     <a href="http://localhost:8000/login">Login</a>
                 </div>
             </div>
@@ -22,27 +22,7 @@
 <script>
 
 export default {
-
-    data() {
-        return {
-            viewable: false,
-            user: null,
-        }
-    },
-    async mounted() {
-        //Check if user is authenticated [replace with user prop from App.vue]
-        let response = await fetch( "http://localhost:8000/api/checkSession", {
-            credentials: "include",
-            mode: "cors",
-            referrerPolicy: "no-referrer"
-        } );
-        let data = await response.json();
-        console.log(data.id);
-        if(data.status !==401) {
-            this.viewable = true;
-            this.user = data;
-        }
-    }
+    props: ['user']
 }
 
 

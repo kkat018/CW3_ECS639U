@@ -1,8 +1,8 @@
 <template>
     <div>
-        <TheNavigation/>
+        <TheNavigation :user="user"/>
         <div v-if="viewable==true">
-            <router-view></router-view>
+            <router-view :user="user"></router-view>
         </div>
         <div class="container" v-if="viewable==false">
             <h2>You are not logged in.</h2>
@@ -16,12 +16,13 @@ import TheNavigation from './components/TheNavigation.vue'
 
 export default {
     components: {TheNavigation},
-    data() {
+    data() { 
         return {
-            viewable: false
+            viewable: false,
+            user: null
         }
     },
-    async mounted() {
+    async created() {
         //Check if user is authenticated
         let response = await fetch( "http://localhost:8000/api/checkSession", {
             credentials: "include",
@@ -31,6 +32,7 @@ export default {
         let data = await response.json();
         if(data.status !==401) {
             this.viewable = true;
+            this.user = data;
         }
     }
 }

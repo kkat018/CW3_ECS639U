@@ -5,68 +5,63 @@
         <input id="name" class="form-control" placeholder="Diary of a Wimpy Kid" maxlength="100" required>
         </div>
         <div class="form-group form-item">
-        <label for="price">Starting Price (£)</label>
-        <input id="price" class="form-control" type="number" placeholder="32" required>
+            <label for="price">Starting Price (£)</label>
+            <input id="price" class="form-control" type="number" placeholder="32" required>
         </div>
         <div class="form-group form-item flex" id="file-input">
-            <label for="image">Example file input</label>
+            <label for="image">Image</label>
             <input type="file" class="form-control-file" id="image">
         </div>
         <div class="form-group form-item">
-        <label for="description">Description</label>
-        <textarea class="form-control" id="description" rows="2" maxlength="250" required></textarea>
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" rows="2" maxlength="250" required></textarea>
         </div>
         <div class="form-group form-item">
-        <label for="dateTime">Expiry Date</label>
-        <input id="dateTime" class="form-control" name="date" type="datetime-local" required>
+            <label for="dateTime">Expiry Date</label>
+            <input id="dateTime" class="form-control" name="date" type="datetime-local" required>
         </div>
         <button type="button" class="btn btn-primary" @click="listItem">Add</button>
     </form>
+
 </template>
 
 <script>
 
 
 export default {
-    data() {
-        return {
-            user: null,
-        }
-    },
-    async mounted() {
-        //Check if user is authenticated [replace with user prop from App.vue]
-        let response = await fetch( "http://localhost:8000/api/checkSession", {
-            credentials: "include",
-            mode: "cors",
-            referrerPolicy: "no-referrer"
-        } );
-        let data = await response.json();
-        if(data.status !==401) {
-            this.viewable = true;
-            this.user = data;
-        }
-    },
+    props: ['user'],
     methods: {
         async listItem(){
-            let name = document.getElementById("name");
-            let price = document.getElementById("price");
-            let description = document.getElementById("description");
-            let date = document.getElementById("dateTime");
-            let response = await fetch( "http://127.0.0.1:8000/api/addItem/",
-                {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        "user_id": this.user.id,
-                        "name": name.value,
-                        "price": price.value,
-                        "description": description.value,
-                        "expiry_date": date.value
-                    })
-                }
-            );
-            let data = await response.json();
-            console.log(data)
-            // this.employees.push( data );
+            // create a new form data object
+            const itemData = new FormData();
+            // append the name input's value to the form data object
+            itemData.append('name', document.getElementById('name').value);
+            // append the description input's value to the form data object
+            itemData.append('description', document.getElementById('description').value);
+            // append the price input's value to the form data object
+            itemData.append('price', document.getElementById('price').value);
+            // append the image input's value to the form data object
+            itemData.append('image', document.getElementById('image').files[0]);
+            // append the date input's value to the form data object
+            itemData.append('date', document.getElementById('dateTime').value);
+            // append the user_id input's value to the form data object
+            itemData.append('user_id', this.user.id);
+
+            // send the form data object to the server for uploading itemData
+            const response = await fetch('http://localhost:8000/api/addItem/', {
+                // MUST USE POST METHOD for uploading images
+                method: 'POST',
+                body: itemData
+            });
+
+            // get the response from the server
+            if(response.ok) {
+                // if the response is ok, then the item was uploaded successfully
+                alert("Item added successfully");
+            } else {
+                // if the response is not ok, then the item was not uploaded successfully
+                alert("Item not added");
+            }
         }
     }
 }
