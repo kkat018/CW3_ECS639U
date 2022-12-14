@@ -21,4 +21,10 @@ urlpatterns = [
     path('api/addItem/', views.create_item_api, name='add_item_api'),
 
     path('api/checkSession/', views.check_user_authenticated),
+
+    path('api/addQuestion/', views.add_question, name='add_question'),
+
+    path('api/renderQuestions/<int:item_id>/', views.render_questions, name='render_questions'),
+
+    # path('api/addAnswer/<int:item_id>/', views.render_questions, name='render_questions'),
 ]

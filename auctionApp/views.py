@@ -4,8 +4,10 @@ from django.http import HttpRequest, HttpResponse, JsonResponse, Http404, HttpRe
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, SignupForm
-from .models import User, Item
+from .models import QuestionDetails, User, Item
 import json
+from django.core import serializers
+# from django.contrib.auth.models import User
 
 
 # @login_required
@@ -175,3 +177,30 @@ def check_user_authenticated(request):
             })
         return HttpResponse("Unauthourised", status=401)
 
+
+def add_question(request):
+    print("checkk1")
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        user = get_curr_user(body['user_id'])
+        item = body['item']
+        item_ = Item.objects.get(id=item[0]['id'])
+        question = QuestionDetails.objects.create(
+            text = body['text'],
+            user= user,
+            item = item_
+        )
+        question.save()
+    return JsonResponse({})
+
+
+def render_questions(request: HttpRequest, item_id : int ):
+    if request.method == 'GET':
+        item = Item.objects.get(id=item_id)
+        questions = QuestionDetails.objects.filter(item=item)
+        qs_json = serializers.serialize('json', questions)
+        return HttpResponse(qs_json, content_type='application/json')
+
+
+def get_curr_user(id):
+    return User.objects.get(pk=id)

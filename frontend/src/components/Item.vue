@@ -28,7 +28,28 @@
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
         Add bid
         </button>
+        
+        <div class="input-group mb-3">
+            <input id='question' type="text" class="form-control" placeholder="Ask a question!" aria-label="Question"
+                aria-describedby="button-addon2">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="button-addon2" @click="add_question">Submit</button>
+            </div>
+        </div>
 
+        <button class="btn btn-primary" type="button" @click="get_questions">Get Questions</button>
+        <div v-if="show">
+            <div v-for="q in question">
+                {{q}} 
+                <!-- <div>
+                    <button class="btn btn-primary" type="button" @click="add_answer">
+                        ADD ANSWER
+                    </button> <input id='question' type="text" class="form-control" placeholder="Answer!" aria-label="Answer"
+                            aria-describedby="button-addon2">
+                </div> -->
+            </div>
+        </div>
+        
         
     </div>
 </template>
@@ -52,6 +73,10 @@ export default {
                 user: null,
                 expiry_date: new Date(),
             },
+            question: {
+                question: null
+            },
+            show: false
         }
     },
     async created() {
@@ -69,8 +94,61 @@ export default {
         //     let response = await fetch("/api/items/")
         //     let data = await response.json()
         //     this.items = data.items
-        // },
-        
+        // },56`§§
+
+        async add_question() {
+            // lines 89 to 96 get current user id
+            let response = await fetch("http://localhost:8000/api/checkSession", {
+                credentials: "include",
+                mode: "cors",
+                referrerPolicy: "no-referrer"
+            });
+            let data = await response.json();
+            let user_id = data['user_id']
+
+            let question = document.getElementById('question')
+            let response1 = await fetch( "http://127.0.0.1:8000/api/addQuestion/" , 
+            {
+                method: 'POST',
+                body: JSON.stringify({
+                    "text": question.value,
+                    "user_id": user_id,
+                    "item": this.item,
+                })
+            });
+            let data2 = await response1.json();
+            this.get_questions();
+        },
+
+        async get_questions() {
+            this.show=true
+            let response = await fetch(`http://127.0.0.1:8000/api/renderQuestions/${this.$route.params.id}`)
+            let data = await response.json();
+            let question = []
+            for (var i=0; i<data.length; i++){
+                question[i] = (data[i].fields.text)
+            }
+            this.question = question
+            return {};
+        },
+
+        // async add_answer(){
+        //     let item_owner = this.item.user.id
+
+        //     let response = await fetch("http://localhost:8000/api/checkSession", {
+        //         credentials: "include",
+        //         mode: "cors",
+        //         referrerPolicy: "no-referrer"
+        //     });
+        //     let data = await response.json();
+        //     console.log("question:", data['user_id']);
+        //     let user_id = data['user_id']
+
+        //     if(user_id==item_owner){
+        //         console.log("successs")
+        //     }
+
+        // }
     }
 }
 
