@@ -20,6 +20,10 @@ urlpatterns = [
 
     path('api/item/<int:item_id>/', views.item_api, name='item_api'),
 
+    path('api/item/makeBid', views.make_bid, name='make_bid' ),
+
+    path('api/search/<str:search_input>', views.search, name='search' ),
+
     path('api/addItem/', views.create_item_api, name='add_item_api'),
 
     path('api/checkSession/', views.check_user_authenticated),

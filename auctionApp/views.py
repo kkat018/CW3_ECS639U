@@ -4,8 +4,10 @@ from django.http import HttpRequest, HttpResponse, JsonResponse, Http404, HttpRe
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, SignupForm
-from .models import User, Item
+from .models import User, Item, BidDetails
 import json
+from django.db.models import Q
+from datetime import datetime
 
 
 
@@ -57,6 +59,62 @@ def create_item_api(request: HttpRequest) -> JsonResponse:
         return JsonResponse(newItem.to_dict())
 
 
+def search(request: HttpRequest, search_input: str) -> JsonResponse:
+    if request.method == "GET":
+        items = Item.objects.filter(
+            Q(description__contains=search_input) |
+            Q(name__contains=search_input)
+        )
+        return JsonResponse({
+                'items': [
+                    item.to_dict() for item in items
+                ]
+            })
+
+
+def make_bid(request: HttpRequest) -> JsonResponse:
+    if request.method == 'PUT':
+        bid_data = json.loads(request.body)
+        # print(bid_data['item_id'])
+        
+        item_id = bid_data['item_id']
+        amount = bid_data['amount']
+        user_id = bid_data['user_id']
+        
+        user = User.objects.get(id=user_id)
+        item = Item.objects.get(id=item_id)
+
+        bids = BidDetails.objects.filter(item__id=item_id)
+        bid = None
+        # print(bids[0].amount)
+        if bids:
+            highest_amount = bids[0].amount
+            if amount > highest_amount:
+                # post       
+                bid = get_object_or_404(BidDetails, id=bids[0].id)     
+                bid.item = item
+                bid.user = user
+                bid.amount = amount
+                bid.time = datetime.now()
+                # bids[0].save()
+                bid.save()
+            else:
+                return JsonResponse({'message': 'Sorry, you cannot bid under the current price.'})
+        else:
+            starting_price = item.starting_price
+            if amount > starting_price:
+                bid = BidDetails.objects.create(
+                    user = user,
+                    item = item,
+                    time = datetime.now(),
+                    amount = amount,
+                )
+            else:
+                return JsonResponse({'message': 'Sorry, you cannot bid under the current price.'})
+
+        return JsonResponse(bid.to_dict())
+
+    return HttpResponseBadRequest("Invalid request method")
 
 
 
@@ -81,11 +139,11 @@ def item_api(request: HttpRequest, item_id: int) -> JsonResponse:
 
     if request.method == 'GET':
         return JsonResponse({
-            'item': [
+            'item': 
                 # item.to_dict() for item in Item.objects.all()
                 # Item.objects.get(item_id)
                 item.to_dict()
-            ]
+            
         })
     return HttpResponseBadRequest("Invalid method request")
 
@@ -192,6 +250,7 @@ def logout_view(request):
 
     auth.logout(request)
     return redirect('auctionApp:login')
+
 
 def check_user_authenticated(request):
     '''
