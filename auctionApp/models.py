@@ -23,7 +23,8 @@ class Item(models.Model):
             'description': self.description,
             'date_posted': self.date_posted,
             'image': self.image.url if self.image else None,
-            'user': self.user.to_dict() if self.user else None,
+            'user': self.user.id if self.user else None,
+            'owner': self.user.username if self.user else None,
             'expiry_date': self.expiry_date,
         }
 
