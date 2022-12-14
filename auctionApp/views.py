@@ -219,6 +219,7 @@ def profile_api(request):
         user = get_object_or_404(User, id=user_id)
 
         user.username = body['username'];
+        user.email = body['email'];
         user.date_of_birth = body['date_of_birth'];
         user.city = body['city'];
         user.save()

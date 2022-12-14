@@ -16,11 +16,19 @@
                     <button v-if="this.editModeImage == true" @click=" editUserImage()" type="button" class="btn btn-success">Save Image</button>
                 </div>
             </div>
-            <!-- <figure class="profile__image" v-if="this.editMode == true">
-                 <input type="file" name="fileToUpload" id="fileToUpload">
-            </figure> -->
             <div class="flex">
                 <div class="flex-column">
+                    <div class="flex mb-32">
+                        <div class="flex-column mr-32">
+                            <p class="heading">Email</p>
+                            <p class="details" v-if="this.editMode == false">
+                                {{ this.user.email }}
+                            </p>
+                            <p v-if="this.editMode == true">
+                                <input id="editEmail" type="email" :value="this.user.email"/>
+                            </p>
+                        </div>
+                    </div>
                     <div class="flex mb-32">
                         <div class="flex-column mr-32">
                             <p class="heading">Date of Birth</p>
@@ -77,19 +85,21 @@ export default {
                 body: JSON.stringify({
                     "id": this.user.id,
                     "username": document.getElementById( "editUsername" ).value,
+                    "email": document.getElementById( "editEmail" ).value,
                     "date_of_birth": document.getElementById( "editBirthDate" ).value,
                     "city": document.getElementById( "editCity" ).value,
                 })
             });
             let res = await response.json();
             this.user.username = res.username;
+            this.user.email = res.email;
             this.user.date_of_birth = res.date_of_birth;
             this.user.city = res.city;
 
             console.log(res);
         },
         async editUserImage() {
-            this.editModeImage = false;å
+            this.editModeImage = false;
             const userData = new FormData();
             userData.append('user_id', this.user.id); //need id to know whose image to save into
             userData.append('image', document.getElementById('editImage').files[0]);
@@ -111,7 +121,6 @@ export default {
             let res = await response_image.json();
             this.user.image = res.image
             console.log(res);
-            
         }
     }
 }
