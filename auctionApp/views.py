@@ -121,6 +121,12 @@ def signup_view(request):
 
             password = form.cleaned_data['password']
 
+            #email validation
+            email = form.cleaned_data['email']
+            if not email:
+                form.add_error('email', 'Please provide an email')
+                return render(request, 'auctionApp/auth/signup.html', {'form': form})
+
             #city validation
             city = form.cleaned_data['city']
             if not city:
@@ -138,6 +144,7 @@ def signup_view(request):
             # set user's details
             new_user.set_password(password)
             new_user.city = city
+            new_user.email = email
             new_user.date_of_birth = date_of_birth
             new_user.save()
             # authenticate user

@@ -32,7 +32,7 @@ class User(AbstractUser):
 
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField( max_length=254 )
-    date_of_birth = models.DateField('Date of Birth')
+    date_of_birth = models.DateField('Date of Birth', auto_now=True)
     city = models.CharField(max_length=50)
     image = models.ImageField(upload_to='assets/', blank=True)
 

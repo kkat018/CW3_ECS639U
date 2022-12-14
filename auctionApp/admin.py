@@ -9,7 +9,7 @@ admin.site.register(AnswerDetails)
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['id', 'username', 'date_of_birth', 'city', 'image', ]
+    list_display = ['id', 'username', 'email', 'date_of_birth', 'city', 'image' ]
     ordering = ['id']
     
 

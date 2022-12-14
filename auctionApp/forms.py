@@ -56,7 +56,6 @@ class SignupForm(forms.Form):
         empty_label=("Choose Year", "Choose Month", "Choose Day"),
     ),
 )
-
     password = forms.CharField(
         label='Password',
         max_length=50,
@@ -67,11 +66,18 @@ class SignupForm(forms.Form):
         max_length=50,
         widget=forms.PasswordInput,
     )
+    email = forms.EmailField(
+        label="Email",
+        widget=forms.EmailInput(
+            attrs={'autocomplete': 'email'}
+        )
+    )
 
     helper = FormHelper()
     helper.form_id = 'signup-form'
     helper.layout = Layout(
         Row('username', css_class='mb-2'),
+        Row('email', css_class='mb-2'),
         Row('city', css_class='mb-2'),
         Row('date_of_birth', css_class='mb-2'),
         Row('password', css_class='mb-2'),
@@ -82,11 +88,3 @@ class SignupForm(forms.Form):
         )
     )
 
-class DateInput(forms.DateInput):
-    input_type = 'date'
-
-class LastActiveForm(forms.Form):
-    """
-    Last Active Date Form
-    """
-    last_active = forms.DateField(widget=DateInput)
