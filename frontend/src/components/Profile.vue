@@ -8,7 +8,7 @@
             <div class="flex mr-32">
                 <figure class="profile__image">
                     <img v-if="this.editModeImage == false && this.user.image !== null" :src="'http://localhost:8000' + this.user.image"  :alt="this.user.username" width="500" height="600">
-                    <!-- <img v-if="this.editMode == false" :src="'../../media/assets/profile/default.jpg' + this.user.username"  :alt="this.user.username" width="500" height="600"></img> -->
+                    <img v-if="this.editModeImage == false && this.user.image === null" :src="'profile_placeholder.jpg'" :alt="this.user.username" width="500" height="600">
                     <input v-if="this.editModeImage == true" type="file" class="form-control-file" id="editImage">
                 </figure>
                 <div class="flex-column">
@@ -21,25 +21,25 @@
             </figure> -->
             <div class="flex">
                 <div class="flex-column">
-                    <div class="flex mb-32" v-if="this.user.date_of_birth !== null">
+                    <div class="flex mb-32">
                         <div class="flex-column mr-32">
                             <p class="heading">Date of Birth</p>
                             <p class="details" v-if="this.editMode == false">
                                 {{ this.user.date_of_birth }}
                             </p>
                             <p v-if="this.editMode == true">
-                                <input id="editBirthDate" type="date" :value="this.user.date_of_birth"/>
+                                <input id="editBirthDate" type="date" :value="this.user.date_of_birth == null ? new Date() : this.user.date_of_birth"/>
                             </p>
                         </div>
                     </div>
-                    <div class="flex" v-if="this.user.city !== null">
+                    <div class="flex">
                         <div class="flex-column mr-32">
                             <p class="heading">City</p>
                             <p class="details" v-if="this.editMode == false">
                                 {{ this.user.city }}
                             </p>
                             <p v-if="this.editMode == true">
-                                <input id="editCity" type="text" :value="this.user.city"/>
+                                <input id="editCity" type="text" :value="this.user.city == null ? 'London' : this.user.city"/>
                             </p>
                         </div>
                     </div>
@@ -63,9 +63,6 @@ export default {
         }
     },
     props: ['user'],
-    async created() {
-        // console.log(this.user.image.url); //test
-    },
     methods: {
         async toggleEdit() {
             this.editMode = true;

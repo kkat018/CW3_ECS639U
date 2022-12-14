@@ -102,6 +102,7 @@ def signup_view(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
+            # username validation 
             username = form.cleaned_data['username']
 
             if not username:
@@ -112,16 +113,32 @@ def signup_view(request):
                 form.add_error('username', 'Username already exists')
                 return render(request, 'auctionApp/auth/signup.html', {'form': form})
 
+            # password validation
             if form.cleaned_data['password'] != form.cleaned_data['password_confirm']:
                 form.add_error('password', 'Passwords to not match')
                 form.add_error('password_confirm', 'Passwords to not match')
                 return render(request, 'auctionApp/auth/signup.html', {'form': form})
 
             password = form.cleaned_data['password']
+
+            #city validation
+            city = form.cleaned_data['city']
+            if not city:
+                form.add_error('city', 'Please provide a city')
+                return render(request, 'auctionApp/auth/signup.html', {'form': form})
+
+            # date of birth validation
+            date_of_birth = form.cleaned_data['date_of_birth']
+            if not date_of_birth:
+                form.add_error('date_of_birth', 'Please provide a date of birth')
+                return render(request, 'auctionApp/auth/signup.html', {'form': form})
+
             # create a new user
             new_user = User.objects.create(username=username)
-            # set user's password
+            # set user's details
             new_user.set_password(password)
+            new_user.city = city
+            new_user.date_of_birth = date_of_birth
             new_user.save()
             # authenticate user
             # establishes a session, will add user object as attribute

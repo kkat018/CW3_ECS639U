@@ -3,6 +3,7 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Row, Layout, Submit
 from crispy_forms.bootstrap import FormActions
+import datetime
 
 
 class LoginForm(forms.Form):
@@ -41,6 +42,21 @@ class SignupForm(forms.Form):
             }
         )
     )
+    city = forms.CharField(
+        label='City',
+        widget=forms.TextInput(
+            attrs={
+                'autocomplete': 'city',
+            }
+        )
+    )
+    date_of_birth = forms.DateField (
+        label="Date of Birth",
+        widget=forms.widgets.SelectDateWidget(
+        empty_label=("Choose Year", "Choose Month", "Choose Day"),
+    ),
+)
+
     password = forms.CharField(
         label='Password',
         max_length=50,
@@ -56,6 +72,8 @@ class SignupForm(forms.Form):
     helper.form_id = 'signup-form'
     helper.layout = Layout(
         Row('username', css_class='mb-2'),
+        Row('city', css_class='mb-2'),
+        Row('date_of_birth', css_class='mb-2'),
         Row('password', css_class='mb-2'),
         Row('password_confirm', css_class='mb-2'),
         FormActions(
@@ -63,3 +81,12 @@ class SignupForm(forms.Form):
             css_class='mt-3'
         )
     )
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+class LastActiveForm(forms.Form):
+    """
+    Last Active Date Form
+    """
+    last_active = forms.DateField(widget=DateInput)
