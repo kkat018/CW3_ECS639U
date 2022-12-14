@@ -1,18 +1,11 @@
 
 <template>
-    <div>
-        <h1>All Items</h1>
-        <router-link to="/addItem">
-            <button @click="addItem" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
+    <h1>All Items</h1>
+       <router-link to="/addItem">
+           <button @click="addItem" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
                 Add item
             </button>
         </router-link>
-
-        <div class="input-group mb-3">
-            <input v-model="search_input" type="text" class="form-control" placeholder="Search item by name/description" aria-label="Searchbar" aria-describedby="searchButton">
-            <button @click="search" class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
-            <button @click="clear" class="btn btn-outline-secondary" type="button" id="clearButton">Clear</button>
-        </div>
 
         <div class="card-deck">
             <div class="row" >
@@ -29,7 +22,7 @@
                 </div>
             </div>
         </div>
-    </div>
+
 </template>
 
 <script>
@@ -43,7 +36,6 @@ export default {
     props: ["title"],
     data() {
         return {
-            search_input: "",
             items: [],
             item: {
                 name: null,
@@ -74,25 +66,7 @@ export default {
             // let data = await response.json()
             // this.items = data.items
         },
-        async search() {
-            let response = await fetch(`http://localhost:8000/api/search/${this.search_input}`)
-            if (response.ok) {
-                let data = await response.json()
-                this.items = data.items
-            } else {
-                alert("Failed to search items")
-            }
-        },
-        async clear() {
-            this.search_input = ""
-            let response = await fetch('http://localhost:8000/api/items/')
-            if (response.ok) {
-                let data = await response.json()
-                this.items = data.items
-            } else {
-                console.log("Failed to get items")
-            }
-        },
+
     }
 }
 

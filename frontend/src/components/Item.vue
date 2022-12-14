@@ -1,15 +1,10 @@
 
 <template>
     <div>
-        
+        <!-- <h1>{{title}}</h1> -->
         <!-- <div class="card"> -->
-        <h1>Item: {{item.name}}</h1>
+        
         {{item}}
-        {{item.description}}
-        {{item.starting_price}}
-        {{item.date_posted}}
-        owner is {{item.owner}}
-        current price is : {{current_price}}
         
         <!-- <div class="card-deck">
             <div class="row" >
@@ -30,8 +25,7 @@
         </div> -->
 
         <!-- Button trigger page -->
-        <input type="number" v-model="amount" /> 
-        <button :disabled="expired_or_not" @click="addBid" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
         Add bid
         </button>
         
@@ -70,12 +64,7 @@ export default {
     name: 'Item',
     data() {
         return {
-            expired_or_not: true,
-            highest_bidder: null,
-            current_price: 0,
-            amount: 103,
             item: {
-                id: null,
                 name: null,
                 date_posted: new Date(),
                 starting_price: 0,
@@ -95,52 +84,11 @@ export default {
         if (response.ok) {
             let data = await response.json()
             this.item = data.item
-            this.expired_or_not = this.item.expiry_date ? new Date(this.item.expiry_date) < Date.now() : true
         } else {
             console.log("Failed to get item")
         }
-        
     },
     methods: {
-        async addBid() {
-            let response = await fetch( "http://localhost:8000/api/checkSession", {
-                credentials: "include",
-                mode: "cors",
-                referrerPolicy: "no-referrer"
-            } );
-            let data = await response.json();
-            console.log("user id" + data.user_id);
-            console.log(this.item.id)
-            console.log(this.amount)
-            if(data.status !== 401) {            
-                let response = await fetch("http://localhost:8000/api/item/makeBid", {
-                    method: "PUT",
-                    body: JSON.stringify({
-                        item_id: this.item.id,
-                        user_id: data.user_id,
-                        amount: this.amount,
-                    })
-                });
-                if (response.ok) {
-                    console.log("yeayy")
-                    let data = await response.json()
-                    if ('message' in data) {
-                        alert(data.message)
-                    } else {
-                        this.current_price = data.amount
-                    }
-                    
-                    // console.log(this.current_price)
-                    // this.highest_bidder = data.user.username
-                    
-                }
-                else {
-                    console.log("waaaaaa")
-                }
-            } else {
-                alert("failed to make bid")
-            }
-        },
         // async fetchItems() {
         //     //perform AJAX request to fetch items
         //     let response = await fetch("/api/items/")
