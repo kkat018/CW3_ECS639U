@@ -64,6 +64,7 @@ class User(AbstractUser):
         return {
             'id':self.id,
             'username': self.username,
+            'email': self.email,
             'date_of_birth': self.date_of_birth,
             'city': self.city,
             'image': self.image.url if self.image else None,
