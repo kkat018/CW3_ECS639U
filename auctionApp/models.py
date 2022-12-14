@@ -131,7 +131,7 @@ class AnswerDetails(models.Model):
         to= User,
         related_name='answered_by',
         on_delete=models.CASCADE
-    )
+    ) #only owner can be user
     question = models.OneToOneField(
         to=QuestionDetails,
         related_name='related_to_question',

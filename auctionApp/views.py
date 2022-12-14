@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse, Http404, HttpRe
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, SignupForm
-from .models import QuestionDetails, User, Item
+from .models import AnswerDetails, QuestionDetails, User, Item
 import json
 from django.core import serializers
 # from django.contrib.auth.models import User
@@ -179,7 +179,6 @@ def check_user_authenticated(request):
 
 
 def add_question(request):
-    print("checkk1")
     if request.method == 'POST':
         body = json.loads(request.body)
         user = get_curr_user(body['user_id'])
@@ -191,7 +190,7 @@ def add_question(request):
             item = item_
         )
         question.save()
-    return JsonResponse({})
+    return JsonResponse(question.to_dict())
 
 
 def render_questions(request: HttpRequest, item_id : int ):
@@ -204,3 +203,29 @@ def render_questions(request: HttpRequest, item_id : int ):
 
 def get_curr_user(id):
     return User.objects.get(pk=id)
+
+
+def add_answer(request, item_id):
+    body = json.loads(request.body)
+    if request.method == 'POST':
+        quest = QuestionDetails.objects.get(text=body['question'])
+        # AnswerDetails.objects.exists
+        checker = AnswerDetails.objects.filter(question=quest)
+        if not checker.exists():
+            print("hi")
+            item = Item.objects.get(pk=item_id)
+            print(item.user)
+            new_ans = AnswerDetails.objects.create(
+                text = body['answer'],
+                question = quest,
+                user=item.user #only item owner can answer
+            )
+            new_ans.save()
+            return JsonResponse(new_ans.to_dict())
+        print(type(quest))
+    return JsonResponse({"Cannot"})
+
+def get_answer(request, question):
+    
+    print("hi2")
+    return JsonResponse({})

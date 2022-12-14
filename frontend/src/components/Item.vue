@@ -37,16 +37,27 @@
             </div>
         </div>
 
-        <button class="btn btn-primary" type="button" @click="get_questions">Get Questions</button>
+        <button class="btn btn-primary" type="button" @click="get_questions()">Get Questions</button>
         <div v-if="show">
-            <div v-for="q in question">
+            <div v-for=" q in question">
                 {{q}} 
-                <!-- <div>
-                    <button class="btn btn-primary" type="button" @click="add_answer">
+
+                <div v-for="ans in answer">
+                    <div v-if="ans.question == q">
+                        {{ans.text}}
+                    </div>
+                </div>
+                <div v-if="answer==null">
+                    
+                </div>
+                <!-- <div v-else> -->
+                    <input :id=index type="text" class="form-control" placeholder="Answer!" aria-label="Answer"
+                        aria-describedby="button-addon2">
+                    
+                    <button class="btn btn-primary" type="button" @click="add_answer(q.id, q.text)">
                         ADD ANSWER
-                    </button> <input id='question' type="text" class="form-control" placeholder="Answer!" aria-label="Answer"
-                            aria-describedby="button-addon2">
-                </div> -->
+                    </button>
+                <!-- </div> -->
             </div>
         </div>
         
@@ -76,7 +87,8 @@ export default {
             question: {
                 question: null
             },
-            show: false
+            show: false,
+            answer: null,
         }
     },
     async created() {
@@ -87,6 +99,7 @@ export default {
         } else {
             console.log("Failed to get item")
         }
+        // fetch answers from
     },
     methods: {
         // async fetchItems() {
@@ -116,39 +129,62 @@ export default {
                     "item": this.item,
                 })
             });
+            this.question = await response1.json()
             let data2 = await response1.json();
             this.get_questions();
         },
 
         async get_questions() {
-            this.show=true
+            //get questions for particular item which is open
+            this.show=true // flag to show questions
             let response = await fetch(`http://127.0.0.1:8000/api/renderQuestions/${this.$route.params.id}`)
             let data = await response.json();
+            // response returns QuerySet of multiple questions which needs to be displayed properly
             let question = []
             for (var i=0; i<data.length; i++){
-                question[i] = (data[i].fields.text)
+                question[i] = (data[i].fields.text) // convert response to array of question.text
             }
             this.question = question
             return {};
         },
 
-        // async add_answer(){
-        //     let item_owner = this.item.user.id
+        async add_answer(index, question){
+            let item_owner = this.item[0].user.id
 
-        //     let response = await fetch("http://localhost:8000/api/checkSession", {
-        //         credentials: "include",
-        //         mode: "cors",
-        //         referrerPolicy: "no-referrer"
-        //     });
-        //     let data = await response.json();
-        //     console.log("question:", data['user_id']);
-        //     let user_id = data['user_id']
+            let response = await fetch("http://localhost:8000/api/checkSession", {
+                credentials: "include",
+                mode: "cors",
+                referrerPolicy: "no-referrer"
+            });
+            let data = await response.json();
+            let user_id = data['user_id']
 
-        //     if(user_id==item_owner){
-        //         console.log("successs")
-        //     }
+            if(user_id!=item_owner){
+                console.log("successs")
+            }
+            let answer = document.getElementById(index)
+            let resp = await fetch(`http://127.0.0.1:8000/api/addAnswer/${this.$route.params.id}/` ,
+                {
+                    method: "POST",
+                    body: JSON.stringify ({
+                        "answer" : answer.value,
+                        "question": question
+                    })
+                }    
+            )
+            this.answer = await resp.json()
+            console.log(answer)
+        },
 
-        // }
+        async get_answer(index, question){
+            console.log("question", question)
+            let response = await fetch(`http://127.0.0.1:8000/api/getAnswers/${question}`)
+            // if (response){
+            //     console.log("hi")
+            // }
+            console.log("hello youuu")
+
+        }
     }
 }
 

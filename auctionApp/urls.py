@@ -26,5 +26,7 @@ urlpatterns = [
 
     path('api/renderQuestions/<int:item_id>/', views.render_questions, name='render_questions'),
 
-    # path('api/addAnswer/<int:item_id>/', views.render_questions, name='render_questions'),
+    path('api/addAnswer/<int:item_id>/', views.add_answer, name='add_answer'),
+    
+    path('api/getAnswers/<str:question>', views.get_answer, name='add_answer'),
 ]
