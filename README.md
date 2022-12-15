@@ -34,3 +34,7 @@ password: user3
 
 username: user4
 password: user4
+
+# Gmail Account
+group50.middleeast@gmail.com
+password: middleeast50

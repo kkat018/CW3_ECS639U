@@ -16,7 +16,7 @@ import TheNavigation from './components/TheNavigation.vue'
 
 export default {
     components: {TheNavigation},
-    data() { 
+    data() {
         return {
             viewable: false,
             user: null

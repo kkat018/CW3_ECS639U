@@ -30,6 +30,10 @@ urlpatterns = [
 
     path('api/profile/', views.profile_api),
 
+    path('api/addQuestion/', views.add_question),
+
+    path('api/getPendingQuestions/<int:item_id>', views.get_pending_questions),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

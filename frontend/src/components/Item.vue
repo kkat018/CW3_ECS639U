@@ -30,39 +30,39 @@
         </div> -->
 
         <!-- Button trigger page -->
+        <div v-if="item.user != this.user.id">
         <input type="number" v-model="amount" /> 
         <button :disabled="expired_or_not" @click="addBid" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
         Add bid
         </button>
+        <input id="question" class="form-control" type="text" required>
+        <button type="button" class="btn btn-primary" @click="addQuestion">Add</button>
+        </div>
+
+        <div v-if="item.user == this.user.id">
+            <h3>User asked questions</h3>
+            <div v-for="question in item.questions">
+                {{question.question}}
+            </div>
+
+        </div>
 
         
     </div>
 </template>
 
 <script>
-// import { ref } from 'vue'
 
-// defineProps({
-//   msg: String
-// })
 export default {
     name: 'Item',
+    props: ['user'],
     data() {
         return {
+            item: null,
             expired_or_not: true,
             highest_bidder: null,
             current_price: 0,
             amount: 103,
-            item: {
-                id: null,
-                name: null,
-                date_posted: new Date(),
-                starting_price: 0,
-                description: "",
-                image: "",
-                user: null,
-                expiry_date: new Date(),
-            },
         }
     },
     async created() {
@@ -74,7 +74,20 @@ export default {
         } else {
             console.log("Failed to get item")
         }
+        console.log('item below');
+        console.log(this.item)
+
+            
         
+            console.log('TESTTTTTTTTTT');
+            console.log(this.item.questions)
+            console.log('TESTTTTTTTTTT')
+            console.log('3')
+
+        let res = await fetch("http://localhost:8000/api/getPendingQuestions/"+this.item.id)
+        let data = await res.json();
+        
+
     },
     methods: {
         async addBid() {
@@ -104,10 +117,10 @@ export default {
                     } else {
                         this.current_price = data.amount
                     }
-                    
+
                     // console.log(this.current_price)
                     // this.highest_bidder = data.user.username
-                    
+
                 }
                 else {
                     console.log("waaaaaa")
@@ -116,13 +129,25 @@ export default {
                 alert("failed to make bid")
             }
         },
-        // async fetchItems() {
-        //     //perform AJAX request to fetch items
-        //     let response = await fetch("/api/items/")
-        //     let data = await response.json()
-        //     this.items = data.items
-        // },
-        
+        async addQuestion() {
+            console.log(this.user)
+
+            const question = document.getElementById( "question" ).value;
+            const response = await fetch('http://localhost:8000/api/addQuestion/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    "user_id": this.user.id,
+                    "question": question,
+                    "item_id": this.item.id
+                })
+            });
+
+            let res = await response.json();
+            this.item = res;
+            console.log("ultimate test")
+            console.log(this.item);
+            console.log("ultimate test")
+        }
     }
 }
 

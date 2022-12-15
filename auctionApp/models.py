@@ -95,64 +95,21 @@ class BidDetails(models.Model):
         }
 
 
-# keep two models for questions and answers so you can distinguish. make sure
-#  item owner is the one who is answering the quesiton for the item
-# questions and answers have one to one relationship
-class QuestionDetails(models.Model):
-    text = models.CharField(max_length=250)
-    time = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(
+class QuestionAnswer(models.Model):
+    question = models.CharField(max_length=250, null=False)
+    answer = models.CharField(max_length=250, blank=True)
+    posted_by = models.ForeignKey(
         to=User,
-        related_name='sender',
+        null=False,
         on_delete=models.CASCADE
     )
-    item = models.ForeignKey(
-        to=Item,
-        related_name='question_for_item',
-        on_delete=models.CASCADE
-    )
-
 
     def __str__(self):
-        return self.text
-
+        return self.question
 
     def to_dict(self):
         return {
-            'id': self.id,
-            'text': self.text,
-            'time': self.time,
-            'user': self.user.to_dict() if self.user else None,
-            'item': self.item.to_dict() if self.item else None,
+            'question': self.question,
+            'answer': self.answer,
+            'posted_by': self.posted_by.id
         }
-
-
-class AnswerDetails(models.Model):
-    text = models.CharField(max_length=250)
-    time = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(
-        to= User,
-        related_name='answered_by',
-        on_delete=models.CASCADE
-    )
-    question = models.OneToOneField(
-        to=QuestionDetails,
-        related_name='related_to_question',
-        on_delete=models.CASCADE
-    )
-
-
-    def __str__(self):
-        return self.text
-
-
-    def to_dict(self):
-        return {
-            'id':self.id,
-            'text': self.text,
-            'time': self.time,
-            'user': self.user.to_dict() if self.user else None,
-            'question': self.question.to_dict() if self.question else None,
-        }
-
-

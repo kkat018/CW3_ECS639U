@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse, Http404, HttpRe
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, SignupForm
-from .models import User, Item, BidDetails
+from .models import User, Item, BidDetails, QuestionAnswer
 import json
 from django.db.models import Q
 from datetime import datetime
@@ -296,3 +296,37 @@ def profile_api(request):
             user.image = request.FILES['image']
             user.save()
             return JsonResponse( user.to_dict())
+
+def add_question(request):
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf8')
+        body = json.loads(body_unicode)
+
+        user_id = body['user_id']
+        user = get_object_or_404(User, id=user_id)
+
+        item_id = body['item_id']
+        item = get_object_or_404(Item, id=item_id)
+
+        print("TEST")
+        print(item)
+
+        newQuestionAnswer = QuestionAnswer.objects.create(
+           question = body['question'],
+           posted_by = user,
+        )
+
+        newQuestionAnswer.save()
+        item.questions.add(newQuestionAnswer)
+        item.save()
+
+        return JsonResponse( item.to_dict())
+
+def get_pending_questions(request, item_id: int):
+
+    item = get_object_or_404(Item, id=item_id)
+    print(item.get_all_questions())
+    return JsonResponse(item.get_all_questions())
+
+
+
