@@ -315,18 +315,21 @@ def add_question(request):
            question = body['question'],
            posted_by = user,
         )
-
         newQuestionAnswer.save()
+
         item.questions.add(newQuestionAnswer)
         item.save()
 
-        return JsonResponse( item.to_dict())
+        return JsonResponse(item.to_dict())
 
 def get_pending_questions(request, item_id: int):
 
     item = get_object_or_404(Item, id=item_id)
     print(item.get_all_questions())
-    return JsonResponse(item.get_all_questions())
+    # return JsonResponse( [item.get_all_questions()])
+    return JsonResponse({
+            'questions': [ item.get_all_questions()]
+        })
 
 
 

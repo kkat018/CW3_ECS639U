@@ -31,7 +31,7 @@
 
         <!-- Button trigger page -->
         <div v-if="item.user != this.user.id">
-        <input type="number" v-model="amount" /> 
+        <input type="number" v-model="amount" />
         <button :disabled="expired_or_not" @click="addBid" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
         Add bid
         </button>
@@ -39,15 +39,12 @@
         <button type="button" class="btn btn-primary" @click="addQuestion">Add</button>
         </div>
 
-        <div v-if="item.user == this.user.id">
-            <h3>User asked questions</h3>
-            <div v-for="question in item.questions">
-                {{question.question}}
-            </div>
-
+        <h3>Questions and Answers</h3>
+        <div v-for="question in this.item.questions">
+            <!-- <div v-if=""></div> -->
+            {{question.question}} asked by {{ question.posted_by }}
         </div>
 
-        
     </div>
 </template>
 
@@ -59,6 +56,7 @@ export default {
     data() {
         return {
             item: null,
+            users: null,
             expired_or_not: true,
             highest_bidder: null,
             current_price: 0,
@@ -74,19 +72,20 @@ export default {
         } else {
             console.log("Failed to get item")
         }
-        console.log('item below');
-        console.log(this.item)
-
-            
-        
-            console.log('TESTTTTTTTTTT');
-            console.log(this.item.questions)
-            console.log('TESTTTTTTTTTT')
-            console.log('3')
 
         let res = await fetch("http://localhost:8000/api/getPendingQuestions/"+this.item.id)
         let data = await res.json();
-        
+        console.log("this is the reponse");
+        console.log(data.questions[0][1].question + " |");
+        this.item.questions = data.questions[0];
+
+        // for(let i=0; i<this.item.questions.length; i++) {
+        //     console.log(
+        //         this.item.questions[i].question + "|" +
+        //         this.item.questions[i].posted_by + "|"
+        //     );
+        // }
+
 
     },
     methods: {
@@ -130,7 +129,6 @@ export default {
             }
         },
         async addQuestion() {
-            console.log(this.user)
 
             const question = document.getElementById( "question" ).value;
             const response = await fetch('http://localhost:8000/api/addQuestion/', {
@@ -144,9 +142,6 @@ export default {
 
             let res = await response.json();
             this.item = res;
-            console.log("ultimate test")
-            console.log(this.item);
-            console.log("ultimate test")
         }
     }
 }

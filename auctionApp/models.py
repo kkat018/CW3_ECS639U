@@ -11,9 +11,16 @@ class Item(models.Model):
     image = models.ImageField(upload_to='assets/', default="assets/profile_default.jpeg")
     expiry_date = models.DateTimeField('Bid Expiry Date')
     user = models.ForeignKey("User", null=True, blank=True, related_name= "owns", on_delete=models.CASCADE)
+    questions = models.ManyToManyField("QuestionAnswer")
 
     def __str__(self):
         return self.name
+    
+    def get_all_questions(self):
+        qs =  [ q.to_dict() for q in self.questions.all()]
+        print(qs)
+        return qs
+
 
     def to_dict(self):
         return {
@@ -33,18 +40,12 @@ class User(AbstractUser):
 
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField( max_length=254 )
-    date_of_birth = models.DateField('Date of Birth', auto_now=True)
+    date_of_birth = models.DateField('Date of Birth', auto_now=True, null=True)
     city = models.CharField(max_length=50)
     image = models.ImageField(upload_to='assets/', blank=True)
 
-    questions = models.ManyToManyField(
-        to=Item,
-        blank=True,
-        symmetrical=False,
-        through = "QuestionDetails",
-        related_name='question_of_user',
-    )
-# one bid many user???
+
+
     bids = models.ManyToManyField(
         to=Item,
         blank=True,
@@ -70,7 +71,6 @@ class User(AbstractUser):
             'city': self.city,
             'image': self.image.url if self.image else None,
             'bids': [bid.to_dict() for bid in self.bids.all()],
-            'questions': [question.to_dict() for question in self.questions.all()],
         }
 
 
