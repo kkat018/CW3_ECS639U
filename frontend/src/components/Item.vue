@@ -33,9 +33,9 @@
                     {{ u.username }} asked...{{question}}
                 </div>
             </div>
-            <div class="question">{{question.question}}</div>
+            <div class="question">{{question.question}}</div> superuser:{{this.user.superuser}} questionid:{{question.id}}
             <div v-if="this.user.is_superuser = true" class="flex mb-32">
-                <input id="question" class="form-control w-50 inline mr-32" type="text" required>
+                <input class="form-control w-50 inline mr-32" type="text" required>
                 <button type="button" class="btn btn-primary" @click="addAnswer(question.id)">Submit Answer</button>
             </div>
         </div>
@@ -148,6 +148,19 @@ export default {
 
             let res = await response.json();
             this.item = res;
+        },
+        async addAnswer(question_id) {
+            // const answer = document.getElementById( question_id ).value;
+            // const response = await fetch('http://localhost:8000/api/addAnswer/', {
+            //     method: 'POST',
+            //     body: JSON.stringify({
+            //         "answer": answer,
+            //         "question_id": question_id
+            //     })
+            // });
+
+            // let res = await response.json();
+            // this.item = res;
         }
     }
 }

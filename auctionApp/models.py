@@ -15,7 +15,7 @@ class Item(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def get_all_questions(self):
         qs =  [ q.to_dict() for q in self.questions.all()]
         print(qs)

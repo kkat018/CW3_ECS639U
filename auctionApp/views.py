@@ -343,4 +343,19 @@ def user_is_superuser(request, user_id: int):
     print(user.is_superuser)
     return JsonResponse( {'superuser' : user.is_superuser} )
 
+# def add_answer(request):
+#     body_unicode = request.body.decode('utf8')
+#     body = json.loads(body_unicode)
+
+#     answer = body['answer']
+#     question_id = body['question_id']
+#     question = get_object_or_404(QuestionAnswer, id=question_id)
+
+#     question.answer.add(answer)
+#     question.save()
+    
+#     return JsonResponse( {
+#         questionAnswer: question.to_dict()
+#     } )
+
 

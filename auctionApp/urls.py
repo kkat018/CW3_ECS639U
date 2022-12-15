@@ -38,6 +38,8 @@ urlpatterns = [
 
     path('api/checkSuperuser/<int:user_id>/', views.user_is_superuser),
 
+    # path('api/addAnswer', views.add_answer),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
