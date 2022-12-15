@@ -33,6 +33,8 @@ export default {
         if(data.status !==401) {
             this.viewable = true;
             this.user = data;
+            console.log("user id ffrom App:");
+            console.log(this.user.id);
         }
     }
 }

@@ -1,7 +1,7 @@
 
 <template>
     <div class="container page-container">
-        
+
         <!-- <div class="card"> -->
         <h1>Item: {{item.name}}</h1>
         {{item}}
@@ -27,15 +27,20 @@
         </div>
 
         <h3 class="mb-16">Questions and Answers</h3>
-        <div v-for="question in this.item.questions">
+        <div class="seperator mb-32" v-for="question in this.item.questions">
             <div v-for="u in this.users">
                 <div v-if="u.id == question.posted_by" class="text-left">
-                    {{ u.username }} asked...{{question}}
+                    {{ u.username }} asked...
                 </div>
             </div>
-            <div class="question">{{question.question}}</div> superuser:{{this.user.superuser}} questionid:{{question.id}}
-            <div v-if="this.user.is_superuser = true" class="flex mb-32">
-                <input class="form-control w-50 inline mr-32" type="text" required>
+            <div class="question">{{question.question}}</div>
+            <div v-if="question.answer.length == 0" class="mb-32 text-left">Not answered yet</div>
+            <div v-if="question.answer.length > 0" class="mb-32 text-left">ANSWER: {{question.answer}}</div>
+            <!-- questionid:{{question.id}}
+            user is {{this.user.id}}
+            item owner is{{this.item.user}} -->
+            <div v-if="this.user.id == this.item.user && question.answer.length == 0" class="flex mb-32">
+                <input :id=question.id class="form-control w-50 inline mr-32" type="text" required>
                 <button type="button" class="btn btn-primary" @click="addAnswer(question.id)">Submit Answer</button>
             </div>
         </div>
@@ -61,11 +66,13 @@ export default {
     async created() {
         let response = await fetch(`http://localhost:8000/api/item/${this.$route.params.id}/`)
         if (response.ok) {
-            let data = await response.json()
-            this.item = data.item
-            this.expired_or_not = this.item.expiry_date ? new Date(this.item.expiry_date) < Date.now() : true
+            let data = await response.json();
+            this.item = data.item;
+            console.log("item");
+            console.log(this.item);
+            this.expired_or_not = this.item.expiry_date ? new Date(this.item.expiry_date) < Date.now() : true;
         } else {
-            console.log("Failed to get item")
+            console.log("Failed to get item");
         }
 
         let res = await fetch("http://localhost:8000/api/getPendingQuestions/"+this.item.id)
@@ -88,20 +95,20 @@ export default {
         console.log(this.users);
         // console.log(data_users.users[0].id);
 
-        let res_super = await fetch("http://localhost:8000/api/checkSuperuser/"+this.user.id)
-        const superuser_result = await res_super.json();
-        this.user.superuser =  superuser_result.superuser;
-        console.log(this.user.superuser);
+        // let res_super = await fetch("http://localhost:8000/api/checkSuperuser/"+this.user.id)
+        // const superuser_result = await res_super.json();
+        // this.user.superuser =  superuser_result.superuser;
+        // console.log(this.user.superuser);
         
         //Email
-        let response_email = await fetch("http://localhost:8000/api/sendEmail/")
-        if (response_email.ok) {
-            let data = await response.json()
-            this.item = data.item
-            this.expired_or_not = this.item.expiry_date ? new Date(this.item.expiry_date) < Date.now() : true
-        } else {
-            console.log("Failed to get item")
-        }
+        // let response_email = await fetch("http://localhost:8000/api/sendEmail/")
+        // if (response_email.ok) {
+        //     let data = await response.json()
+        //     this.item = data.item
+        //     this.expired_or_not = this.item.expiry_date ? new Date(this.item.expiry_date) < Date.now() : true
+        // } else {
+        //     console.log("Failed to get item")
+        // }
 
     },
     methods: {
@@ -158,19 +165,20 @@ export default {
 
             let res = await response.json();
             this.item = res;
+
         },
         async addAnswer(question_id) {
-            // const answer = document.getElementById( question_id ).value;
-            // const response = await fetch('http://localhost:8000/api/addAnswer/', {
-            //     method: 'POST',
-            //     body: JSON.stringify({
-            //         "answer": answer,
-            //         "question_id": question_id
-            //     })
-            // });
+            const answer = document.getElementById( question_id ).value;
+            const response = await fetch('http://localhost:8000/api/addAnswer/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    "answer": answer,
+                    "question_id": question_id
+                })
+            });
 
-            // let res = await response.json();
-            // this.item = res;
+            let res = await response.json();
+            this.item = res;
         }
     }
 }

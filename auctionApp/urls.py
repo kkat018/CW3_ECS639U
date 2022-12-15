@@ -36,11 +36,11 @@ urlpatterns = [
 
     path('api/getUsers/', views.get_all_users),
 
-    path('api/checkSuperuser/<int:user_id>/', views.user_is_superuser),
+    # path('api/checkSuperuser/<int:user_id>/', views.user_is_superuser),
 
-    # path('api/addAnswer', views.add_answer),
+    path('api/addAnswer/', views.add_answer),
 
-    path('api/sendEmail/', views.send_email),
+    # path('api/sendEmail/', views.send_email),
 
 ]
 

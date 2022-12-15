@@ -8,7 +8,7 @@
             </div>
             <div class="center">
                 <div class="flex center" v-if="this.user !== null">
-                    <p class="mb-0 mr-32">Welcome {{this.user.username}}!</p>
+                    <p class="mb-0 mr-32">Welcome {{this.user.username}}!{{this.user.id}}</p>
                     <a href="http://localhost:8000/logout">Logout</a>
                 </div>
                 <div class="center" v-if="this.user == null">

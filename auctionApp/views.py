@@ -10,18 +10,18 @@ from django.db.models import Q
 from datetime import datetime
 from django.core.mail import BadHeaderError, send_mail
 
-def send_email(request):
-    subject = 'You won the Bid!'
-    message = 'Follow the link to pay now.'
-    from_email = 'group50.middleeast@gmail.com',
-    if subject and message and from_email:
-        try:
-            send_mail(subject, message, from_email, ['durrao.brien@gmail.com'])
-        except BadHeaderError:
-            return HttpResponse('Invalid header found.')
-        return HttpResponseRedirect('/')
-    else:
-        return HttpResponse('Make sure all fields are entered and valid.')
+# def send_email(request):
+#     subject = 'You won the Bid!'
+#     message = 'Follow the link to pay now.'
+#     from_email = 'group50.middleeast@gmail.com',
+#     if subject and message and from_email:
+#         try:
+#             send_mail(subject, message, from_email, ['durrao.brien@gmail.com'])
+#         except BadHeaderError:
+#             return HttpResponse('Invalid header found.')
+#         return HttpResponseRedirect('/')
+#     else:
+#         return HttpResponse('Make sure all fields are entered and valid.')
 
 # @login_required
 def index(request: HttpRequest) -> HttpResponse:
@@ -350,25 +350,23 @@ def get_all_users(request):
         'users': [ user.to_dict() for user in User.objects.all() ]
     })
 
-def user_is_superuser(request, user_id: int):
-    user = get_object_or_404(User, id=user_id)
-    print(user.is_superuser)
-    return JsonResponse( {'superuser' : user.is_superuser} )
+# def user_is_superuser(request, user_id: int):
+#     user = get_object_or_404(User, id=user_id)
+#     print(user.is_superuser)
+#     return JsonResponse( {'superuser' : user.is_superuser} )
 
-# def add_answer(request):
-#     body_unicode = request.body.decode('utf8')
-#     body = json.loads(body_unicode)
+def add_answer(request):
+    body_unicode = request.body.decode('utf8')
+    body = json.loads(body_unicode)
 
-#     answer = body['answer']
-#     question_id = body['question_id']
-#     question = get_object_or_404(QuestionAnswer, id=question_id)
+    question_id = body['question_id']
+    question = get_object_or_404(QuestionAnswer, id=question_id)
+    question.answer = body['answer']
+    question.save()
 
-#     question.answer.add(answer)
-#     question.save()
-    
-#     return JsonResponse( {
-#         questionAnswer: question.to_dict()
-#     } )
+    print(question.answer)
+    # return JsonResponse( { 'questionAnswer': question.to_dict() })
+    return JsonResponse( question.to_dict() )
 
 
 

@@ -109,6 +109,7 @@ class QuestionAnswer(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.id,
             'question': self.question,
             'answer': self.answer,
             'posted_by': self.posted_by.id

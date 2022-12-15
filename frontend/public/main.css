@@ -297,10 +297,14 @@ a {
   padding: 1rem;
   border: 0.5px darkgray solid;
   background-color: aliceblue;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   text-align: initial;
 }
 
 .text-left {
   text-align: left;
+}
+
+.seperator {
+  border-bottom: solid 2px black;
 }
