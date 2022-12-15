@@ -8,10 +8,11 @@ class Item(models.Model):
     starting_price = models.FloatField(blank=False)
     description = models.CharField(max_length=250, blank=True)
     date_posted = models.DateField('Date Posted', auto_now=True)
-    image = models.ImageField(upload_to='assets/', default="assets/profile_default.jpeg")
+    image = models.ImageField(upload_to='assets/', default="default.jpg")
     expiry_date = models.DateTimeField('Bid Expiry Date')
     user = models.ForeignKey("User", null=True, blank=True, related_name= "owns", on_delete=models.CASCADE)
     questions = models.ManyToManyField("QuestionAnswer")
+
 
     def __str__(self):
         return self.name
@@ -30,8 +31,8 @@ class Item(models.Model):
             'description': self.description,
             'date_posted': self.date_posted,
             'image': self.image.url if self.image else None,
-            'user': self.user.id if self.user else None,
-            'owner': self.user.username if self.user else None,
+            'user': self.user.id,
+            'owner': self.user.username,
             'expiry_date': self.expiry_date,
         }
 

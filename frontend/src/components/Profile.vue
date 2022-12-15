@@ -8,7 +8,7 @@
             <div class="flex mr-32">
                 <figure class="profile__image">
                     <img v-if="this.editModeImage == false && this.user.image !== null" :src="'http://localhost:8000' + this.user.image"  :alt="this.user.username" width="500" height="600">
-                    <img v-if="this.editModeImage == false && this.user.image === null" :src="'profile_placeholder.jpg'" :alt="this.user.username" width="500" height="600">
+                    <img v-if="this.editModeImage == false && this.user.image == null" :src="'http://localhost:8000/media/default.jpg'" :alt="this.user.username" width="500" height="600">
                     <input v-if="this.editModeImage == true" type="file" class="form-control-file" id="editImage">
                 </figure>
                 <div class="flex-column">

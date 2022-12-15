@@ -28,10 +28,8 @@ def index(request: HttpRequest) -> HttpResponse:
     """
     Initial index url path will route here
     """
-    title = "test"
-    return render(request, "auctionApp/pages/index.html", {
-        'title': title,
-    })
+    # Change on deployment
+    return redirect("http://localhost:8001/")
 
 
 # @login_required
@@ -161,7 +159,7 @@ def item_api(request: HttpRequest, item_id: int) -> JsonResponse:
 
 
 
-def signup_view(request):
+def signup_view(request: HttpRequest) -> HttpResponse:
     '''
     Signup function
     Users creating an account
@@ -228,7 +226,7 @@ def signup_view(request):
     return render(request, 'auctionApp/auth/signup.html', {'form': SignupForm})
 
 
-def login_view(request):
+def login_view(request: HttpRequest) -> HttpResponse:
     '''
     Login function
     Users logging into the app
@@ -255,7 +253,7 @@ def login_view(request):
 
 
 @login_required
-def logout_view(request):
+def logout_view(request: HttpRequest) -> HttpResponse:
     '''
     Once users logout they are redirected to login page
     '''
@@ -264,7 +262,7 @@ def logout_view(request):
     return redirect('auctionApp:login')
 
 
-def check_user_authenticated(request):
+def check_user_authenticated(request: HttpRequest) -> HttpResponse:
     '''
     Checks if user is authenticated -- returns user details as a dictionary if they are
     '''
@@ -273,7 +271,7 @@ def check_user_authenticated(request):
             return JsonResponse(request.user.to_dict())
         return HttpResponse("Unauthourised", status=401)
 
-def profile_api(request):
+def profile_api(request: HttpRequest) -> HttpResponse:
     '''
     This method is responsible for handling edit requests for the Profile API:
 
@@ -309,7 +307,7 @@ def profile_api(request):
             user.save()
             return JsonResponse( user.to_dict())
 
-def add_question(request):
+def add_question(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         body_unicode = request.body.decode('utf8')
         body = json.loads(body_unicode)
@@ -334,9 +332,9 @@ def add_question(request):
         item.questions.add(newQuestionAnswer)
         item.save()
 
-        return JsonResponse(item.to_dict())
+        return JsonResponse(newQuestionAnswer.to_dict())
 
-def get_pending_questions(request, item_id: int):
+def get_pending_questions(request: HttpRequest, item_id: int) -> HttpResponse:
 
     item = get_object_or_404(Item, id=item_id)
     print(item.get_all_questions())
@@ -345,7 +343,7 @@ def get_pending_questions(request, item_id: int):
             'questions': [ item.get_all_questions()]
         })
 
-def get_all_users(request):
+def get_all_users(request: HttpRequest) -> JsonResponse:
     return JsonResponse({
         'users': [ user.to_dict() for user in User.objects.all() ]
     })
@@ -355,7 +353,7 @@ def get_all_users(request):
 #     print(user.is_superuser)
 #     return JsonResponse( {'superuser' : user.is_superuser} )
 
-def add_answer(request):
+def add_answer(request: HttpRequest) -> JsonResponse:
     body_unicode = request.body.decode('utf8')
     body = json.loads(body_unicode)
 
@@ -367,6 +365,8 @@ def add_answer(request):
     print(question.answer)
     # return JsonResponse( { 'questionAnswer': question.to_dict() })
     return JsonResponse( question.to_dict() )
+
+
 
 
 

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'auctionApp',
     'crispy_forms',
     'corsheaders',
+    'django_crontab'
 ]
 
 AUTH_USER_MODEL = 'auctionApp.User'

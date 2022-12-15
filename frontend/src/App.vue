@@ -30,7 +30,9 @@ export default {
             referrerPolicy: "no-referrer"
         } );
         let data = await response.json();
+        console.log(data.status);
         if(data.status !==401) {
+
             this.viewable = true;
             this.user = data;
             console.log("user id ffrom App:");

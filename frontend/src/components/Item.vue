@@ -3,17 +3,19 @@
     <div class="container page-container">
 
         <!-- <div class="card"> -->
-        <h1>Item: {{item.name}}</h1>
-        {{item}}
+            <!-- {{this.item}} -->
+        <!-- <h1>Item: {{this.item.name}}</h1> -->
+        <!-- {{item}}
         {{item.description}}
         {{item.starting_price}}
-        {{item.date_posted}}
-        owner is {{item.owner}}
+        {{item.date_posted}} -->
+        <!-- owner is {{item.owner}} -->
         current price is : {{current_price}}
 
 
         <!-- Button trigger page -->
-        <div v-if="item.user != this.user.id">
+        <p>{{this.user}}</p>
+        <div v-if="this.item.user != this.user.id"> {{this.item}}
             <input type="number" v-model="amount" />
             <button :disabled="expired_or_not" @click="addBid" type="button" class="inline btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
             Add bid
@@ -55,7 +57,17 @@ export default {
     props: ['user'],
     data() {
         return {
-            item: null,
+            item: {
+                id: null,
+                name: null,
+                date_posted: new Date(),
+                starting_price: 0,
+                description: "",
+                image: "",
+                user: null,
+                expiry_date: new Date(),
+                questions: []
+            },
             users: null,
             expired_or_not: true,
             highest_bidder: null,
@@ -68,7 +80,6 @@ export default {
         if (response.ok) {
             let data = await response.json();
             this.item = data.item;
-            console.log("item");
             console.log(this.item);
             this.expired_or_not = this.item.expiry_date ? new Date(this.item.expiry_date) < Date.now() : true;
         } else {
@@ -76,8 +87,9 @@ export default {
         }
 
         let res = await fetch("http://localhost:8000/api/getPendingQuestions/"+this.item.id)
-        let data = await res.json();
-        this.item.questions = data.questions[0];
+        let data_q = await res.json();
+        this.item.questions = data_q.questions[0];
+        console.log(this.item.questions)
         // console.log("this is the reponse");
         // console.log(data.questions[0][1].question + " |");
 
@@ -113,42 +125,29 @@ export default {
     },
     methods: {
         async addBid() {
-            let response = await fetch( "http://localhost:8000/api/checkSession", {
-                credentials: "include",
-                mode: "cors",
-                referrerPolicy: "no-referrer"
-            } );
-            let data = await response.json();
-            console.log("user id" + data.user_id);
-            console.log(this.item.id)
-            console.log(this.amount)
-            if(data.status !== 401) {            
-                let response = await fetch("http://localhost:8000/api/item/makeBid", {
-                    method: "PUT",
-                    body: JSON.stringify({
-                        item_id: this.item.id,
-                        user_id: data.user_id,
-                        amount: this.amount,
-                    })
-                });
-                if (response.ok) {
-                    console.log("yeayy")
-                    let data = await response.json()
-                    if ('message' in data) {
-                        alert(data.message)
-                    } else {
-                        this.current_price = data.amount
-                    }
-
-                    // console.log(this.current_price)
-                    // this.highest_bidder = data.user.username
-
+            let response = await fetch("http://localhost:8000/api/item/makeBid", {
+                method: "PUT",
+                body: JSON.stringify({
+                    item_id: this.item.id,
+                    user_id: this.user.id,
+                    amount: this.amount,
+                })
+            });
+            if (response.ok) {
+                console.log("yeayy")
+                let data = await response.json()
+                if ('message' in data) {
+                    alert(data.message)
+                } else {
+                    this.current_price = data.amount
                 }
-                else {
-                    console.log("waaaaaa")
-                }
-            } else {
-                alert("failed to make bid")
+
+                // console.log(this.current_price)
+                // this.highest_bidder = data.user.username
+
+            }
+            else {
+                console.log("waaaaaa")
             }
         },
         async addQuestion() {
@@ -164,7 +163,8 @@ export default {
             });
 
             let res = await response.json();
-            this.item = res;
+
+            this.item.questions.push(res);
 
         },
         async addAnswer(question_id) {
