@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpRequest, HttpResponse, JsonResponse, Http404, HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse, Http404, HttpResponseBadRequest
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, SignupForm
@@ -8,8 +8,20 @@ from .models import User, Item, BidDetails, QuestionAnswer
 import json
 from django.db.models import Q
 from datetime import datetime
+from django.core.mail import BadHeaderError, send_mail
 
-
+def send_email(request):
+    subject = 'You won the Bid!'
+    message = 'Follow the link to pay now.'
+    from_email = 'group50.middleeast@gmail.com',
+    if subject and message and from_email:
+        try:
+            send_mail(subject, message, from_email, ['durrao.brien@gmail.com'])
+        except BadHeaderError:
+            return HttpResponse('Invalid header found.')
+        return HttpResponseRedirect('/')
+    else:
+        return HttpResponse('Make sure all fields are entered and valid.')
 
 # @login_required
 def index(request: HttpRequest) -> HttpResponse:
@@ -357,5 +369,7 @@ def user_is_superuser(request, user_id: int):
 #     return JsonResponse( {
 #         questionAnswer: question.to_dict()
 #     } )
+
+
 
 

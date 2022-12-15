@@ -40,6 +40,8 @@ urlpatterns = [
 
     # path('api/addAnswer', views.add_answer),
 
+    path('api/sendEmail/', views.send_email),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

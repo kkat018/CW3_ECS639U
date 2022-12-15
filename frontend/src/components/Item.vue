@@ -92,6 +92,16 @@ export default {
         const superuser_result = await res_super.json();
         this.user.superuser =  superuser_result.superuser;
         console.log(this.user.superuser);
+        
+        //Email
+        let response_email = await fetch("http://localhost:8000/api/sendEmail/")
+        if (response_email.ok) {
+            let data = await response.json()
+            this.item = data.item
+            this.expired_or_not = this.item.expiry_date ? new Date(this.item.expiry_date) < Date.now() : true
+        } else {
+            console.log("Failed to get item")
+        }
 
     },
     methods: {
