@@ -82,6 +82,7 @@ def search(request: HttpRequest, search_input: str) -> JsonResponse:
             })
 
 
+@login_required
 def make_bid(request: HttpRequest) -> JsonResponse:
     if request.method == 'PUT':
         bid_data = json.loads(request.body)
