@@ -10,12 +10,30 @@
         {{item.starting_price}}
         {{item.date_posted}} -->
         <!-- owner is {{item.owner}} -->
-        current price is : {{current_price}}
+        <div class="container vw-50" style="background-color: lightgrey;">
+            <div class="row">
+            <div class="col-6" style="border-style: inset;"> Item name: </div>
+            <div class="col-6" style="border-style: inset;"> {{item.name}} </div>
+            <div class="col-6" style="border-style: inset;"> Desciption: </div>
+            <div class="col-6" style="border-style: inset;"> {{item.description}} </div>
+            <div class="col-6" style="border-style: inset;"> Starting price: </div>
+            <div class="col-6" style="border-style: inset;"> {{item.starting_price}} </div>
+            <div class="col-6" style="border-style: inset;"> Date posted: </div>
+            <div class="col-6" style="border-style: inset;"> {{item.date_posted}} </div>
+            <div class="col-6" style="border-style: inset;"> Expirty date: </div>
+            <div class="col-6" style="border-style: inset;"> {{item.expiry_date}} </div>
+            <div class="col-6" style="border-style: inset;"> Current price: </div>
+            <div class="col-6" style="border-style: inset;"> {{current_price}} </div>
+            <div class="col-6" style="border-style: inset;"> Item owner: </div>
+            <div class="col-6" style="border-style: inset;"> {{item.owner}} </div>
+            </div>
+        </div>
 
 
         <!-- Button trigger page -->
-        <p>{{this.user}}</p>
-        <div v-if="this.item.user != this.user.id"> {{this.item}}
+        <!-- <p>{{this.user}}</p> -->
+        <!-- {{this.item}} -->
+        <div v-if="this.item.user != this.user.id"> 
             <input type="number" v-model="amount" />
             <button :disabled="expired_or_not" @click="addBid" type="button" class="inline btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
             Add bid

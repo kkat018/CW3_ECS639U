@@ -28,8 +28,9 @@ def index(request: HttpRequest) -> HttpResponse:
     """
     Initial index url path will route here
     """
+    return render(request, "auctionApp/pages/index.html", {})
     # Change on deployment
-    return redirect("http://localhost:8001/")
+    # return redirect("http://localhost:8001/")
 
 
 # @login_required
