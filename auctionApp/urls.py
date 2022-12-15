@@ -34,6 +34,10 @@ urlpatterns = [
 
     path('api/getPendingQuestions/<int:item_id>', views.get_pending_questions),
 
+    path('api/getUsers/', views.get_all_users),
+
+    path('api/checkSuperuser/<int:user_id>/', views.user_is_superuser),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

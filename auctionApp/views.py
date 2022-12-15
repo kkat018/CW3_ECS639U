@@ -316,6 +316,8 @@ def add_question(request):
            posted_by = user,
         )
         newQuestionAnswer.save()
+        print(newQuestionAnswer.id)
+        print('id above')
 
         item.questions.add(newQuestionAnswer)
         item.save()
@@ -331,5 +333,14 @@ def get_pending_questions(request, item_id: int):
             'questions': [ item.get_all_questions()]
         })
 
+def get_all_users(request):
+    return JsonResponse({
+        'users': [ user.to_dict() for user in User.objects.all() ]
+    })
+
+def user_is_superuser(request, user_id: int):
+    user = get_object_or_404(User, id=user_id)
+    print(user.is_superuser)
+    return JsonResponse( {'superuser' : user.is_superuser} )
 
 

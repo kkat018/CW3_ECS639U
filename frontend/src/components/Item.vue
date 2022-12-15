@@ -1,6 +1,6 @@
 
 <template>
-    <div>
+    <div class="container page-container">
         
         <!-- <div class="card"> -->
         <h1>Item: {{item.name}}</h1>
@@ -10,39 +10,34 @@
         {{item.date_posted}}
         owner is {{item.owner}}
         current price is : {{current_price}}
-        
-        <!-- <div class="card-deck">
-            <div class="row" >
-                <div v-for="item in items" :key="item.id" class="col-sm-4">
-                    <div  class="card" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{item.title}}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Release date: {{item.date_posted}}</h6>
-                            <p class="card-text">TV show <br/> Number of seasons: {{item.expiry_date}} <br/> Has ended: {{item.starting_price}} </p>
-                            
-                            
-                            <button @click="deleteSeries(item)" type="button" class="btn btn-light">Open</button>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-        </div> -->
+
 
         <!-- Button trigger page -->
         <div v-if="item.user != this.user.id">
-        <input type="number" v-model="amount" />
-        <button :disabled="expired_or_not" @click="addBid" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
-        Add bid
-        </button>
-        <input id="question" class="form-control" type="text" required>
-        <button type="button" class="btn btn-primary" @click="addQuestion">Add</button>
+            <input type="number" v-model="amount" />
+            <button :disabled="expired_or_not" @click="addBid" type="button" class="inline btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeriesModal" style="margin: 1rem">
+            Add bid
+            </button>
         </div>
 
-        <h3>Questions and Answers</h3>
+        <h3 class="mb-16">Ask a Question</h3>
+        <div class="flex mb-32">
+            <input id="question" class="form-control w-50 inline mr-32" type="text" required>
+            <button type="button" class="btn btn-primary" @click="addQuestion">Submit Question</button>
+        </div>
+
+        <h3 class="mb-16">Questions and Answers</h3>
         <div v-for="question in this.item.questions">
-            <!-- <div v-if=""></div> -->
-            {{question.question}} asked by {{ question.posted_by }}
+            <div v-for="u in this.users">
+                <div v-if="u.id == question.posted_by" class="text-left">
+                    {{ u.username }} asked...{{question}}
+                </div>
+            </div>
+            <div class="question">{{question.question}}</div>
+            <div v-if="this.user.is_superuser = true" class="flex mb-32">
+                <input id="question" class="form-control w-50 inline mr-32" type="text" required>
+                <button type="button" class="btn btn-primary" @click="addAnswer(question.id)">Submit Answer</button>
+            </div>
         </div>
 
     </div>
@@ -75,9 +70,9 @@ export default {
 
         let res = await fetch("http://localhost:8000/api/getPendingQuestions/"+this.item.id)
         let data = await res.json();
-        console.log("this is the reponse");
-        console.log(data.questions[0][1].question + " |");
         this.item.questions = data.questions[0];
+        // console.log("this is the reponse");
+        // console.log(data.questions[0][1].question + " |");
 
         // for(let i=0; i<this.item.questions.length; i++) {
         //     console.log(
@@ -86,6 +81,17 @@ export default {
         //     );
         // }
 
+        let response_users = await fetch("http://localhost:8000/api/getUsers/")
+        const data_users = await response_users.json();
+        this.users = data_users.users;
+        console.log("users");
+        console.log(this.users);
+        // console.log(data_users.users[0].id);
+
+        let res_super = await fetch("http://localhost:8000/api/checkSuperuser/"+this.user.id)
+        const superuser_result = await res_super.json();
+        this.user.superuser =  superuser_result.superuser;
+        console.log(this.user.superuser);
 
     },
     methods: {

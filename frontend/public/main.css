@@ -223,6 +223,10 @@ a {
   margin-top: 0.5rem;
 }
 
+.mb-16 {
+  margin-bottom: 1rem;
+}
+
 .mb-32 {
   margin-bottom: 2rem;
 }
@@ -279,4 +283,24 @@ a {
 .flex-column {
   display: flex;
   flex-direction: column;
+}
+
+.inline {
+  display: inline;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.question {
+  padding: 1rem;
+  border: 0.5px darkgray solid;
+  background-color: aliceblue;
+  margin-bottom: 2rem;
+  text-align: initial;
+}
+
+.text-left {
+  text-align: left;
 }
