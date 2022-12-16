@@ -363,6 +363,8 @@ def add_answer(request: HttpRequest) -> JsonResponse:
     question.answer = body['answer']
     question.save()
 
+    print('question data is:')
+    print(question)
     print(question.answer)
     # return JsonResponse( { 'questionAnswer': question.to_dict() })
     return JsonResponse( question.to_dict() )

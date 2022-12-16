@@ -44,14 +44,14 @@
             <button type="button" class="btn btn-primary" @click="addQuestion">Submit Question</button>
         </div>
 
-        <h3 class="mb-16">Questions and Answers</h3>
+        <h3 class="mb-16">Questions and Answers</h3> {{this.item.questions[0].question}}
         <div class="seperator mb-32" v-for="question in this.item.questions">
             <div v-for="u in this.users">
                 <div v-if="u.id == question.posted_by" class="text-left">
                     {{ u.username }} asked...
                 </div>
             </div>
-            <div class="question">{{question.question}}</div>
+            <div class="question">{{question.question}}</div>{{question.id}}
             <div v-if="question.answer.length == 0" class="mb-32 text-left">Not answered yet</div>
             <div v-if="question.answer.length > 0" class="mb-32 text-left">ANSWER: {{question.answer}}</div>
             <!-- questionid:{{question.id}}
@@ -82,7 +82,16 @@ export default {
                 image: "",
                 user: null,
                 expiry_date: new Date(),
-                questions: []
+                questions: [],
+                // questions: [{
+                //     id: null,
+                //     question: null,
+                //     answer: null,
+                //     posted_by: null,
+                // } ],
+                // questionAnswer: {
+                //     id: 0, answer: 'null'
+                // }
             },
             users: null,
             expired_or_not: true,
@@ -194,7 +203,24 @@ export default {
             });
 
             let res = await response.json();
-            this.item = res;
+
+            console.log("this is the response after adding an answer:");
+            console.log(this.item.questions.find(e => e.id === res.id).id);
+            let questionId = this.item.questions.find(e => e.id === res.id).id;
+            console.log("question id stored in var:");
+            console.log(questionId);
+            console.log("question id answer");
+            this.item.questions[questionId].answer = res.answer;
+            console.log(this.item.questions[questionId].answer);
+
+
+            // this.item.questions[res.id].answer = res.answer;
+            // console.log("this.item.questions[id].answer is:");
+            // console.log(this.item.questions[0][res.id].answer);
+
+
+            // console.log("all the questions are:");
+            // console.log(this.item.)
         }
     }
 }
