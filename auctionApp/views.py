@@ -220,6 +220,13 @@ def signup_view(request: HttpRequest) -> HttpResponse:
             # on request objects, for all subsequent requests until logout
             user = auth.authenticate(username=username, password=password)
             if user is not None:
+                send_mail(
+                    'Welcome to Auction App', #subject
+                    'Welcome. You can now bid as you wish!', #message
+                    'group50.middleeast@gmail.com', #from_email
+                    [email], #to_email
+                    fail_silently=False,
+                )
                 auth.login(request, user)
                 return redirect('auctionApp:home')
 
